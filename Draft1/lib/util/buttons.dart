@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
 Container LoginRegisterButton(
-    BuildContext context, bool isLogin, Function onTap) {
+    BuildContext context, String text, Function onTap) {
   return Container(
     width: MediaQuery.of(context).size.width/3,
     height: 50,
@@ -13,7 +13,7 @@ Container LoginRegisterButton(
         onTap();
       },
       child: Text(
-        isLogin ? 'Log In' : 'Sign Up',
+        text,
         style: TextStyle(
           color: Colors.white,
           fontWeight: FontWeight.bold,

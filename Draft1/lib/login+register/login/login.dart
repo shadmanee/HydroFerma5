@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:hydroferma5/home/mobile_dashboard.dart';
 import 'package:hydroferma5/login+register/register/signup.dart';
 import 'package:hydroferma5/util/colors.dart';
 import 'package:hydroferma5/util/text_fields.dart';
@@ -31,13 +33,19 @@ class _LoginPageState extends State<LoginPage> {
       body: Container(
         decoration: BoxDecoration(
             gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: gradientList,
-        )),
-        child: Container(
-          padding: MediaQuery.of(context).size.width <= 450
-              ? EdgeInsets.fromLTRB(40, 150, 40, 0)
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: gradientList,
+            )),
+        child: SingleChildScrollView(
+          padding: MediaQuery
+              .of(context)
+              .size
+              .width <= 450
+              ? EdgeInsets.fromLTRB(40, 150, 40, MediaQuery
+              .of(context)
+              .size
+              .height - 150)
               : EdgeInsets.fromLTRB(100, 200, 100, 0),
           child: Column(
             children: <Widget>[
@@ -59,7 +67,8 @@ class _LoginPageState extends State<LoginPage> {
                     onChanged: changeState,
                     activeColor: Color(0xff48BFA3),
                     side: MaterialStateBorderSide.resolveWith(
-                      (states) => BorderSide(width: 1.5, color: Colors.black45),
+                          (states) =>
+                          BorderSide(width: 1.5, color: Colors.black45),
                     ),
                   ),
                   GestureDetector(
@@ -76,7 +85,14 @@ class _LoginPageState extends State<LoginPage> {
                   )
                 ],
               ),
-              LoginRegisterButton(context, true, () {}),
+              LoginRegisterButton(context, 'Log In', () {
+                print("Signing In");
+                FirebaseAuth.instance.signInWithEmailAndPassword(
+                    email: _emailTextController.text,
+                    password: _passwordTextController.text).then((value) => {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => Dashboard()))
+                });
+              }),
               SizedBox(
                 height: 30,
               ),
@@ -118,7 +134,7 @@ class _LoginPageState extends State<LoginPage> {
           child: Text(
             'Sign Up.',
             style:
-                TextStyle(color: Colors.black54, fontWeight: FontWeight.bold),
+            TextStyle(color: Colors.black54, fontWeight: FontWeight.bold),
           ),
         ),
       ],

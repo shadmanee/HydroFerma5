@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:hydroferma5/home/mobile_dashboard.dart';
 import 'package:hydroferma5/login+register/register/signup.dart';
 import 'package:hydroferma5/util/colors.dart';
 import 'package:hydroferma5/util/text_fields.dart';
@@ -16,6 +18,7 @@ class SignUpPage extends StatefulWidget {
 class _SignUpPageState extends State<SignUpPage> {
   TextEditingController _passwordTextController = TextEditingController();
   TextEditingController _emailTextController = TextEditingController();
+  TextEditingController _unameTextController = TextEditingController();
   bool value = false;
 
   void changeState(bool? val) {
@@ -30,13 +33,14 @@ class _SignUpPageState extends State<SignUpPage> {
       body: Container(
         decoration: BoxDecoration(
             gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: gradientList,
-            )),
-        child: Container(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: gradientList,
+        )),
+        child: SingleChildScrollView(
           padding: MediaQuery.of(context).size.width <= 450
-              ? EdgeInsets.fromLTRB(40, 150, 40, 0)
+              ? EdgeInsets.fromLTRB(
+                  40, 150, 40, MediaQuery.of(context).size.height - 150)
               : EdgeInsets.fromLTRB(100, 200, 100, 0),
           child: Column(
             children: <Widget>[
@@ -44,13 +48,13 @@ class _SignUpPageState extends State<SignUpPage> {
               SizedBox(
                 height: 30,
               ),
-              reusableTextField("Username", Icons.person_outline_outlined,
-                  false, _emailTextController),
+              reusableTextField("Username", Icons.person_outline, false,
+                  _unameTextController),
               SizedBox(
                 height: 20,
               ),
-              reusableTextField("Email Address", Icons.person_outline_outlined,
-                  false, _emailTextController),
+              reusableTextField(
+                  "Email Address", Icons.email, false, _emailTextController),
               SizedBox(
                 height: 20,
               ),
@@ -63,16 +67,29 @@ class _SignUpPageState extends State<SignUpPage> {
                     onChanged: changeState,
                     activeColor: Color(0xff48BFA3),
                     side: MaterialStateBorderSide.resolveWith(
-                          (states) => BorderSide(width: 1.5, color: Colors.black45),
+                      (states) => BorderSide(width: 1.5, color: Colors.black45),
                     ),
                   ),
                   Text('I agree to the ',
                       style: TextStyle(color: Colors.black45)),
                   Text('terms and conditions.',
-                      style: TextStyle(color: Colors.black45, fontWeight: FontWeight.bold)),
+                      style: TextStyle(
+                          color: Colors.black45, fontWeight: FontWeight.bold)),
                 ],
               ),
-              LoginRegisterButton(context, false, () {}),
+              LoginRegisterButton(context, 'Sign Up', () {
+                FirebaseAuth.instance
+                    .createUserWithEmailAndPassword(
+                        email: _emailTextController.text,
+                        password: _passwordTextController.text)
+                    .then((value) {
+                  print("Creating New Account");
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => Dashboard()));
+                }).onError((error, stackTrace) {
+                  print("Error ${error.toString()}");
+                });
+              }),
               SizedBox(
                 height: 30,
               ),
@@ -97,7 +114,7 @@ class _SignUpPageState extends State<SignUpPage> {
           child: Text(
             'Log In.',
             style:
-            TextStyle(color: Colors.black54, fontWeight: FontWeight.bold),
+                TextStyle(color: Colors.black54, fontWeight: FontWeight.bold),
           ),
         ),
       ],

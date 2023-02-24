@@ -49,6 +49,8 @@ dependencies:
   curved_navigation_bar: ^1.0.3
   get: ^4.6.5
   page_transition: ^2.0.9
+  firebase_core: ^2.7.0
+  firebase_auth: ^4.2.9
 
 dev_dependencies:
   flutter_test:

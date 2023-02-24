@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "453776381524",
+    "project_id": "hydroferma-login-signup",
+    "storage_bucket": "hydroferma-login-signup.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:453776381524:android:429dae3e456cf185407fc1",
+        "android_client_info": {
+          "package_name": "com.example.hydroferma5"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "453776381524-d319fh98q073l8944cg86169g876kosl.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.hydroferma5",
+            "certificate_hash": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
+          }
+        },
+        {
+          "client_id": "453776381524-0fl090j1m3tmp37boauqkfh2s8ch4it9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDE96JBqwU6OS-RiWcZFMqeRQGjc6zYlqk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "453776381524-0fl090j1m3tmp37boauqkfh2s8ch4it9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
