@@ -2,9 +2,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:hydroferma5/home/mobile_dashboard.dart';
+import 'package:hydroferma5/login+register/login/login.dart';
 import 'package:hydroferma5/login+register/register/signup.dart';
 import 'package:hydroferma5/util/colors.dart';
 import 'package:hydroferma5/util/text_fields.dart';
+import 'package:page_transition/page_transition.dart';
 
 import '../../util/buttons.dart';
 
@@ -25,6 +27,38 @@ class _SignUpPageState extends State<SignUpPage> {
     setState(() {
       this.value = !value;
     });
+  }
+
+  // FirebaseAuth.instance
+  //     .createUserWithEmailAndPassword(
+  // email: _emailTextController.text,
+  // password: _passwordTextController.text)
+  //     .then((value) {
+  // print("Creating New Account");
+  // Navigator.push(context,
+  // MaterialPageRoute(builder: (context) => Dashboard()));
+  // }).onError((error, stackTrace) {
+  // print("Error ${error.toString()}");
+  // });
+
+  Future<void> signUpWithEmail(
+      String email, String password, String displayName) async {
+    try {
+      UserCredential userCredential =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+      User? user = userCredential.user;
+      if (user != null) {
+        await user.updateDisplayName(displayName);
+        print('Signed up user: $displayName');
+      }
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => Dashboard()));
+    } catch (e) {
+      print('Sign-up error: $e');
+    }
   }
 
   @override
@@ -78,17 +112,8 @@ class _SignUpPageState extends State<SignUpPage> {
                 ],
               ),
               LoginRegisterButton(context, 'Sign Up', () {
-                FirebaseAuth.instance
-                    .createUserWithEmailAndPassword(
-                        email: _emailTextController.text,
-                        password: _passwordTextController.text)
-                    .then((value) {
-                  print("Creating New Account");
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => Dashboard()));
-                }).onError((error, stackTrace) {
-                  print("Error ${error.toString()}");
-                });
+                signUpWithEmail(_emailTextController.text,
+                    _passwordTextController.text, _unameTextController.text);
               }),
               SizedBox(
                 height: 30,
@@ -109,7 +134,14 @@ class _SignUpPageState extends State<SignUpPage> {
             style: TextStyle(color: Colors.black45)),
         GestureDetector(
           onTap: () {
-            Navigator.pop(context);
+            Navigator.pushReplacement(
+              context,
+              PageTransition(
+                curve: Curves.linear,
+                type: PageTransitionType.bottomToTop,
+                child: LoginPage(),
+              ),
+            );
           },
           child: Text(
             'Log In.',

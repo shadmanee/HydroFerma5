@@ -12,22 +12,48 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
-  // Future getData() async {
-  //   var firestore = FirebaseFirestore.instance;
-  //   QuerySnapshot qn = await firestore.collection("Users").get();
+  // Future<void> signInWithEmail(String email, String password) async {
+  //   try {
+  //     UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+  //       email: email,
+  //       password: password,
+  //     );
+  //     User? user = userCredential.user;
+  //     if (user != null) {
+  //       String? displayName = user.displayName;
+  //       print('Signed in user: $displayName');
+  //       username = displayName!;
+  //     }
+  //   } catch (e) {
+  //     print('Sign-in error: $e');
+  //   }
   // }
+
+  String username = '';
+
+  void getCurrentUserDisplayName() {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      username = user.displayName!;
+      print('Current user display name: $username');
+    }
+  }
 
   bool flag = false;
 
   bool checkUser() {
     FirebaseAuth.instance.authStateChanges().listen((User? user) {
-      if(user == null) {
+      if (user == null) {
         flag = false;
       }
-      flag = true;
+      else {
+        getCurrentUserDisplayName();
+        flag = true;
+      }
     });
     return flag;
   }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -41,11 +67,14 @@ class _DashboardState extends State<Dashboard> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(checkUser()? "User is currently signed in" : "User is currently signed out"),
+            Text(checkUser()
+                ? "User $username is currently signed in"
+                : "User is currently signed out"),
             LoginRegisterButton(context, 'Log Out', () {
               print("Signing Out");
               FirebaseAuth.instance.signOut().then((value) {
-                Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginPage()));
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) => LoginPage()));
               });
             }),
           ],

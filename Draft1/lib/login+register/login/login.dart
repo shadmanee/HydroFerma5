@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hydroferma5/home/mobile_dashboard.dart';
 import 'package:hydroferma5/login+register/register/signup.dart';
 import 'package:hydroferma5/util/colors.dart';
@@ -20,11 +21,49 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController _passwordTextController = TextEditingController();
   TextEditingController _emailTextController = TextEditingController();
   bool value = false;
+  bool flag = false;
+  String error_text = '';
 
   void changeState(bool? val) {
     setState(() {
       this.value = !value;
     });
+  }
+
+  late UserCredential user;
+
+  Future<void> _signIn() async {
+    try {
+      // Call the signInWithEmailAndPassword method with the user's email and password
+      user = await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: _emailTextController.text,
+          password: _passwordTextController.text);
+      // Navigate to the home screen if the sign-in is successful
+    } on FirebaseAuthException catch (e) {
+      // Show a toast message with the error message
+      switch (e.code) {
+        case 'wrong-password':
+          error_text = 'Wrong password';
+          break;
+        case 'invalid-email':
+          error_text = 'Invalid e-mail';
+          break;
+        case 'user-not-found':
+          error_text = 'User Not Found';
+          break;
+      }
+      Fluttertoast.showToast(
+        msg: error_text,
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
+    }
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => Dashboard()));
   }
 
   @override
@@ -33,19 +72,14 @@ class _LoginPageState extends State<LoginPage> {
       body: Container(
         decoration: BoxDecoration(
             gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: gradientList,
-            )),
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: gradientList,
+        )),
         child: SingleChildScrollView(
-          padding: MediaQuery
-              .of(context)
-              .size
-              .width <= 450
-              ? EdgeInsets.fromLTRB(40, 150, 40, MediaQuery
-              .of(context)
-              .size
-              .height - 150)
+          padding: MediaQuery.of(context).size.width <= 450
+              ? EdgeInsets.fromLTRB(
+                  40, 150, 40, MediaQuery.of(context).size.height - 150)
               : EdgeInsets.fromLTRB(100, 200, 100, 0),
           child: Column(
             children: <Widget>[
@@ -67,8 +101,7 @@ class _LoginPageState extends State<LoginPage> {
                     onChanged: changeState,
                     activeColor: Color(0xff48BFA3),
                     side: MaterialStateBorderSide.resolveWith(
-                          (states) =>
-                          BorderSide(width: 1.5, color: Colors.black45),
+                      (states) => BorderSide(width: 1.5, color: Colors.black45),
                     ),
                   ),
                   GestureDetector(
@@ -87,11 +120,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
               LoginRegisterButton(context, 'Log In', () {
                 print("Signing In");
-                FirebaseAuth.instance.signInWithEmailAndPassword(
-                    email: _emailTextController.text,
-                    password: _passwordTextController.text).then((value) => {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => Dashboard()))
-                });
+                _signIn();
               }),
               SizedBox(
                 height: 30,
@@ -104,13 +133,6 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  static Route<void> _myRouteBuilder(BuildContext context, Object? arguments) {
-    return PageTransition(
-      curve: Curves.linear,
-      type: PageTransitionType.bottomToTop,
-      child: SignUpPage(),
-    );
-  }
 
   Row SignUpOption() {
     return Row(
@@ -122,7 +144,7 @@ class _LoginPageState extends State<LoginPage> {
           onTap: () {
             // print(MediaQuery.of(context).size.width - 80);
             // Navigator.restorablePushReplacement(context, _myRouteBuilder);
-            Navigator.push(
+            Navigator.pushReplacement(
               context,
               PageTransition(
                 curve: Curves.linear,
@@ -134,7 +156,7 @@ class _LoginPageState extends State<LoginPage> {
           child: Text(
             'Sign Up.',
             style:
-            TextStyle(color: Colors.black54, fontWeight: FontWeight.bold),
+                TextStyle(color: Colors.black54, fontWeight: FontWeight.bold),
           ),
         ),
       ],

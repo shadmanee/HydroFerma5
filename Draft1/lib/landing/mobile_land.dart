@@ -3,10 +3,13 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:hydroferma5/home/mobile_dashboard.dart';
 import 'package:hydroferma5/login+register/login/login.dart';
+import 'package:hydroferma5/test/test.dart';
 import 'package:hydroferma5/util/colors.dart';
 import 'package:hydroferma5/util/navbar.dart';
 import 'package:hydroferma5/water+nutrient/water.dart';
 import 'package:page_transition/page_transition.dart';
+
+import '../login+register/login&register.dart';
 
 class MobileLand extends StatefulWidget {
   const MobileLand({Key? key}) : super(key: key);
@@ -18,7 +21,17 @@ class MobileLand extends StatefulWidget {
 class _MobileLandState extends State<MobileLand> with TickerProviderStateMixin {
   // var _bigger = false;
   late AnimationController controller;
-  var move = Random().nextInt(10);
+
+  late int move = getRandomNumber();
+
+  int getRandomNumber() {
+    var rng = Random();
+    int min = 1;
+    int max = 9;
+    int randomNumber = min + rng.nextInt(max - min);
+    return randomNumber;
+  }
+
 
   @override
   void initState() {
@@ -41,12 +54,13 @@ class _MobileLandState extends State<MobileLand> with TickerProviderStateMixin {
   route() {
     Navigator.pushReplacement(
       context,
-      PageTransition(
-        duration: Duration(seconds: 1),
-        curve: Curves.linear,
-        type: PageTransitionType.bottomToTop,
-        child: LoginPage(),
-      ),
+      MaterialPageRoute(builder: (context) => LandingPage())
+      // PageTransition(
+      //   duration: Duration(seconds: 1),
+      //   curve: Curves.linear,
+      //   type: PageTransitionType.bottomToTop,
+      //   child: LoginPage(),
+      // ),
     );
   }
 
