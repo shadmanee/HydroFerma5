@@ -1,87 +1,47 @@
-// import 'package:flutter/material.dart';
-//
-// class LandingPage extends StatefulWidget {
-//   const LandingPage({Key? key}) : super(key: key);
-//
-//   @override
-//   _LandingPageState createState() => _LandingPageState();
-// }
-//
-// class _LandingPageState extends State<LandingPage>
-//     with SingleTickerProviderStateMixin {
-//   late AnimationController _controller;
-//   late Animation<double> _animation;
-//   bool _isVisible = false;
-//
-//   @override
-//   void initState() {
-//     super.initState();
-//
-//     // Initialize the animation controller
-//     _controller = AnimationController(
-//       vsync: this,
-//       duration: Duration(milliseconds: 500),
-//     );
-//
-//     // Create the animation
-//     _animation = Tween<double>(begin: 1.0, end: 0.5).animate(_controller)
-//       ..addListener(() {
-//         setState(() {});
-//       });
-//
-//     // Start the animation after a delay
-//     Future.delayed(Duration(milliseconds: 500), () {
-//       _controller.forward();
-//     });
-//
-//     // Show the buttons after another delay
-//     Future.delayed(Duration(milliseconds: 1000), () {
-//       setState(() {
-//         _isVisible = true;
-//       });
-//     });
-//   }
-//
-//   @override
-//   void dispose() {
-//     _controller.dispose();
-//     super.dispose();
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       body: Center(
-//         child: Column(
-//           mainAxisAlignment: MainAxisAlignment.center,
-//           children: <Widget>[
-//             // Make the logo smaller and move it up
-//             Transform.scale(
-//               scale: _animation.value,
-//               child: Transform.translate(
-//                 offset: Offset(0, -50 * (1 - _animation.value)),
-//                 child: Image.asset(
-//                   'images/logo-green.png',
-//                 ),
-//               ),
-//             ),
-//             // Show the buttons from the bottom
-//             if (_isVisible)
-//               Column(
-//                 children: [
-//                   ElevatedButton(
-//                     onPressed: () {},
-//                     child: Text('Button 1'),
-//                   ),
-//                   ElevatedButton(
-//                     onPressed: () {},
-//                     child: Text('Button 2'),
-//                   ),
-//                 ],
-//               ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
+// padding: MediaQuery.of(context).size.width <= 450
+// ? EdgeInsets.fromLTRB(
+// 40, 150, 40, MediaQuery.of(context).size.height - 150)
+//     : EdgeInsets.fromLTRB(100, 200, 100, 0),
+// child: Column(
+// children: <Widget>[
+// Image.asset('images/logo-green.png'),
+// SizedBox(
+// height: 30,
+// ),
+// reusableTextField("Username", Icons.person_outline, false,
+// _unameTextController),
+// SizedBox(
+// height: 20,
+// ),
+// reusableTextField(
+// "Email Address", Icons.email, false, _emailTextController),
+// SizedBox(
+// height: 20,
+// ),
+// reusableTextField("Password", Icons.lock_person_outlined, false,
+// _passwordTextController),
+// Row(
+// children: [
+// Checkbox(
+// value: this.value,
+// onChanged: changeState,
+// activeColor: Color(0xff48BFA3),
+// side: MaterialStateBorderSide.resolveWith(
+// (states) => BorderSide(width: 1.5, color: Colors.black45),
+// ),
+// ),
+// Text('I agree to the ',
+// style: TextStyle(color: Colors.black45)),
+// Text('terms and conditions.',
+// style: TextStyle(
+// color: Colors.black45, fontWeight: FontWeight.bold)),
+// ],
+// ),
+// LoginRegisterButton(context, 'Sign Up', () {
+// signUpWithEmail(_emailTextController.text,
+// _passwordTextController.text, _unameTextController.text);
+// }),
+// SizedBox(
+// height: 30,
+// ),
+// LogInOption(),

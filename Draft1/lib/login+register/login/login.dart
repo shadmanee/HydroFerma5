@@ -71,62 +71,102 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
-            gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: gradientList,
-        )),
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: gradientList,
+          ),
+        ),
         child: SingleChildScrollView(
-          padding: MediaQuery.of(context).size.width <= 450
-              ? EdgeInsets.fromLTRB(
-                  40, 150, 40, MediaQuery.of(context).size.height - 150)
-              : EdgeInsets.fromLTRB(100, 200, 100, 0),
-          child: Column(
-            children: <Widget>[
-              Image.asset('images/logo-green.png'),
-              SizedBox(
-                height: 30,
-              ),
-              reusableTextField("Email Address", Icons.person_outline_outlined,
-                  false, _emailTextController),
-              SizedBox(
-                height: 20,
-              ),
-              reusableTextField("Password", Icons.lock_person_outlined, false,
-                  _passwordTextController),
-              Row(
-                children: [
-                  Checkbox(
-                    value: this.value,
-                    onChanged: changeState,
-                    activeColor: Color(0xff48BFA3),
-                    side: MaterialStateBorderSide.resolveWith(
-                      (states) => BorderSide(width: 1.5, color: Colors.black45),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              minHeight: MediaQuery.of(context).size.height,
+            ),
+            child: IntrinsicHeight(
+              child: Column(
+                children: <Widget>[
+                  Container(
+                    margin: const EdgeInsets.only(top: 70.0, left: 20.0),
+                    child: Row(
+                      children: [
+                        IconButton(
+                          icon: Icon(
+                            Icons.arrow_back_ios,
+                            color: Colors.black45,
+                          ),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                      ],
                     ),
                   ),
-                  GestureDetector(
-                    child: Text('Remember Me',
-                        style: TextStyle(color: Colors.black45)),
-                  ),
-                  Expanded(child: Container()),
-                  GestureDetector(
-                    child: Container(
-                      padding: EdgeInsets.only(right: 15),
-                      child: Text('Forgot Password?',
-                          style: TextStyle(color: Colors.black45)),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(40, 150-70, 40, 0),
+                    child: Column(
+                      children: [
+                        Image.asset('images/logo-green.png'),
+                        SizedBox(
+                          height: 30,
+                        ),
+                        reusableTextField(
+                          "Email Address",
+                          Icons.person_outline_outlined,
+                          false,
+                          _emailTextController,
+                        ),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        reusableTextField(
+                          "Password",
+                          Icons.lock_person_outlined,
+                          false,
+                          _passwordTextController,
+                        ),
+                        Row(
+                          children: [
+                            Checkbox(
+                              value: this.value,
+                              onChanged: changeState,
+                              activeColor: Color(0xff48BFA3),
+                              side: MaterialStateBorderSide.resolveWith(
+                                    (states) =>
+                                    BorderSide(width: 1.5, color: Colors.black45),
+                              ),
+                            ),
+                            GestureDetector(
+                              child: Text(
+                                'Remember Me',
+                                style: TextStyle(color: Colors.black45),
+                              ),
+                            ),
+                            Expanded(child: Container()),
+                            GestureDetector(
+                              child: Container(
+                                padding: EdgeInsets.only(right: 15),
+                                child: Text(
+                                  'Forgot Password?',
+                                  style: TextStyle(color: Colors.black45),
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                        LoginRegisterButton(context, 'Log In', () {
+                          print("Signing In");
+                          _signIn();
+                        }),
+                        SizedBox(
+                          height: 30,
+                        ),
+                        SignUpOption(),
+                      ],
                     ),
                   )
                 ],
               ),
-              LoginRegisterButton(context, 'Log In', () {
-                print("Signing In");
-                _signIn();
-              }),
-              SizedBox(
-                height: 30,
-              ),
-              SignUpOption(),
-            ],
+            ),
           ),
         ),
       ),
