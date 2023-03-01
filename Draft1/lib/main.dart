@@ -4,6 +4,7 @@ import 'package:hydroferma5/home/mobile_dashboard.dart';
 import 'package:hydroferma5/login+register/login/login.dart';
 import 'package:hydroferma5/responsive/tablet.dart';
 import 'package:hydroferma5/test/test.dart';
+import 'package:hydroferma5/util/navbar.dart';
 import 'landing/mobile_land.dart';
 import 'login+register/login&register.dart';
 import 'login+register/register/signup.dart';
@@ -39,7 +40,7 @@ class AppScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: MediaQuery.of(context).orientation == Orientation.portrait
-          ? MobileLand()
+          ? PopupCarousel()
           : TabletScaffold(),
     );
   }
