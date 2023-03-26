@@ -1,13 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:hydroferma5/home/mobile_dashboard.dart';
-import 'package:hydroferma5/login+register/login/login.dart';
-import 'package:hydroferma5/test/test.dart';
 import 'package:hydroferma5/util/colors.dart';
-import 'package:hydroferma5/util/navbar.dart';
-import 'package:hydroferma5/water+nutrient/water.dart';
-import 'package:page_transition/page_transition.dart';
 
 import '../login+register/login&register.dart';
 
@@ -19,7 +13,6 @@ class MobileLand extends StatefulWidget {
 }
 
 class _MobileLandState extends State<MobileLand> with TickerProviderStateMixin {
-  // var _bigger = false;
   late AnimationController controller;
 
   late int move = getRandomNumber();
@@ -31,7 +24,6 @@ class _MobileLandState extends State<MobileLand> with TickerProviderStateMixin {
     int randomNumber = min + rng.nextInt(max - min);
     return randomNumber;
   }
-
 
   @override
   void initState() {
@@ -53,15 +45,14 @@ class _MobileLandState extends State<MobileLand> with TickerProviderStateMixin {
 
   route() {
     Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => LandingPage())
-      // PageTransition(
-      //   duration: Duration(seconds: 1),
-      //   curve: Curves.linear,
-      //   type: PageTransitionType.bottomToTop,
-      //   child: LoginPage(),
-      // ),
-    );
+        context, MaterialPageRoute(builder: (context) => LandingPage())
+        // PageTransition(
+        //   duration: Duration(seconds: 1),
+        //   curve: Curves.linear,
+        //   type: PageTransitionType.bottomToTop,
+        //   child: LoginPage(),
+        // ),
+        );
   }
 
   @override
@@ -77,7 +68,7 @@ class _MobileLandState extends State<MobileLand> with TickerProviderStateMixin {
         body: Stack(
           children: [
             Center(
-              child: Container(
+              child: SizedBox(
                 width: 400,
                 child: Image.asset('images/logo-blue-bgless.png'),
               ),
@@ -89,6 +80,18 @@ class _MobileLandState extends State<MobileLand> with TickerProviderStateMixin {
                 child: CircularProgressIndicator(
                   value: controller.value,
                   semanticsLabel: 'Circular progress indicator',
+                  color: Colors.white,
+                ),
+              ),
+            ),
+            Container(
+              alignment: Alignment.center,
+              margin: const EdgeInsets.only(top: 280),
+              child: const Text(
+                'HYDROFERMA',
+                style: TextStyle(
+                  fontWeight: FontWeight.w900,
+                  fontSize: 40,
                   color: Colors.white,
                 ),
               ),

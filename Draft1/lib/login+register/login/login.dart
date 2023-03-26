@@ -7,7 +7,6 @@ import 'package:hydroferma5/login+register/register/signup.dart';
 import 'package:hydroferma5/util/colors.dart';
 import 'package:hydroferma5/util/text_fields.dart';
 import 'package:page_transition/page_transition.dart';
-
 import '../../util/buttons.dart';
 
 class LoginPage extends StatefulWidget {
