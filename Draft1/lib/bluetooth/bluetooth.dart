@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:hydroferma5/home/user.dart';
 import 'package:page_transition/page_transition.dart';
 
 import '../home/notifications.dart';
@@ -57,6 +58,7 @@ class _ConnectBluetoothState extends State<ConnectBluetooth> {
       drawer: Sidebar(),
       body: SafeArea(
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Padding(
               padding: EdgeInsets.only(left: 10, right: 10, top: 10),
@@ -115,7 +117,16 @@ class _ConnectBluetoothState extends State<ConnectBluetooth> {
                   IconButton(
                     icon: const Icon(Icons.person),
                     iconSize: 35,
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        PageTransition(
+                          curve: Curves.linear,
+                          type: PageTransitionType.bottomToTop,
+                          child: UserInfo(),
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),
@@ -153,6 +164,7 @@ class _ConnectBluetoothState extends State<ConnectBluetooth> {
                           ),
 // autoHide: const Duration(seconds: 3),
                         ).show();
+                        print('Bluetooth not connected');
                       } else {
                         scanForDevices();
                       }

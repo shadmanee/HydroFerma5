@@ -120,7 +120,7 @@ class _LoginPageState extends State<LoginPage> {
                         reusableTextField(
                           "Password",
                           Icons.lock_person_outlined,
-                          false,
+                          true,
                           _passwordTextController,
                         ),
                         Row(

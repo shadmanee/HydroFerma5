@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:hydroferma5/croprecommendation/search.dart';
+import 'package:hydroferma5/home/user.dart';
+import 'package:hydroferma5/lifecycle/lifecycle_cam.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 import '../util/sidebar.dart';
+import '../water+nutrient/water.dart';
 import 'notifications.dart';
 
 class Dashboard extends StatefulWidget {
@@ -14,35 +18,29 @@ class Dashboard extends StatefulWidget {
 }
 
 class _DashboardState extends State<Dashboard> {
-  int notificationCount = 1; // TODO: Replace with actual notification count
+  var notificationCount = 3; // TODO: Replace with actual notification count
   final pc = PanelController();
   String selectedModule = 'Water Supply';
-
-  String panelHeading(String module) {
-    return module;
-  }
 
   String panelContent(String module) {
     switch (module) {
       case 'Water Supply':
-        return 'Water Supply BS';
+        return 'Information about water and nutrient supply in the system.';
       case 'Water Change':
-        return 'Water Change BS';
-      case 'Crop Recommendation':
-        return 'Crop Recommendation BS';
+        return 'Information about last water change as well as the significance of changing water frequently in a hydroponic system.';
       default:
-        return 'Power Supply BS';
+        return 'Information about crop recommendation using sensor data.';
     }
   }
 
-  GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
       // backgroundColor: Colors.white,
-      drawer: Sidebar(),
+      drawer: SidebarForHome(),
       body: SafeArea(
         child: SlidingUpPanel(
           controller: pc,
@@ -54,7 +52,7 @@ class _DashboardState extends State<Dashboard> {
           panel: Container(
             decoration: BoxDecoration(
               color: Colors.blueGrey[50],
-              borderRadius: BorderRadius.only(
+              borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(20),
                 topRight: Radius.circular(20),
               ),
@@ -62,72 +60,65 @@ class _DashboardState extends State<Dashboard> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                BarIndicator(),
+                const BarIndicator(),
                 Container(
                   padding: EdgeInsets.only(
                     left: MediaQuery.of(context).size.width / 12,
                   ),
                   child: Row(
                     children: [
-                      Container(
-                        child: Row(
-                          children: <Widget>[
-                            Center(
-                              child: Text(
-                                'Module : ',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.black,
-                                ),
+                      Row(
+                        children: <Widget>[
+                          const Center(
+                            child: Text(
+                              'Module : ',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.black,
                               ),
                             ),
-                            Container(
-                              padding: EdgeInsets.only(
-                                left: MediaQuery.of(context).size.width / 30,
-                              ),
-                              child: DropdownButton<String>(
-                                value: selectedModule,
-                                onChanged: (String? value) {
-                                  setState(() {
-                                    selectedModule = value!;
-                                  });
-                                },
-                                items: <String>[
-                                  'Water Supply',
-                                  'Water Change',
-                                  'Crop Recommendation',
-                                  'Power Usage'
-                                ].map<DropdownMenuItem<String>>((String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Text(value),
-                                  );
-                                }).toList(),
-                              ),
+                          ),
+                          Container(
+                            padding: EdgeInsets.only(
+                              left: MediaQuery.of(context).size.width / 30,
                             ),
-                          ],
-                        ),
+                            child: DropdownButton<String>(
+                              value: selectedModule,
+                              onChanged: (String? value) {
+                                setState(() {
+                                  selectedModule = value!;
+                                });
+                              },
+                              items: <String>[
+                                'Water Supply',
+                                'Water Change',
+                                'Crop Recommendation',
+                              ].map<DropdownMenuItem<String>>((String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Expanded(child: Text(value)),
+                                );
+                              }).toList(),
+                            ),
+                          ),
+                        ],
                       )
                     ],
                   ),
                 ),
                 Container(
-                  margin: EdgeInsets.only(
-                    top: MediaQuery.of(context).size.height / 40,
+                  margin: const EdgeInsets.symmetric(
+                    horizontal: 25, vertical: 30
                   ),
-                  width: MediaQuery.of(context).size.width / 1.2,
                   color: Colors.transparent,
                   child: Column(
                     children: [
                       Row(
                         children: [
-                          Container(
-                            padding: EdgeInsets.only(
-                              bottom: MediaQuery.of(context).size.height / 33,
-                            ),
+                          Expanded(
                             child: Text(
-                              panelHeading(selectedModule),
+                              selectedModule,
                               style: TextStyle(
                                 fontSize: 30,
                                 fontWeight: FontWeight.w400,
@@ -137,14 +128,17 @@ class _DashboardState extends State<Dashboard> {
                           ),
                         ],
                       ),
+                      const SizedBox(height: 30),
                       Row(
                         children: [
-                          Text(
-                            panelContent(selectedModule),
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w300,
-                              color: Colors.grey[600],
+                          Expanded(
+                            child: Text(
+                              panelContent(selectedModule),
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w300,
+                                color: Colors.grey[600],
+                              ),
                             ),
                           ),
                         ],
@@ -156,7 +150,7 @@ class _DashboardState extends State<Dashboard> {
                       ),
                       TextButton(
                           onPressed: () {},
-                          child: Text(
+                          child: const Text(
                             'Read More',
                             style: TextStyle(
                                 fontSize: 12,
@@ -195,7 +189,7 @@ class _DashboardState extends State<Dashboard> {
                               PageTransition(
                                 curve: Curves.linear,
                                 type: PageTransitionType.bottomToTop,
-                                child: Notifications(),
+                                child: const Notifications(),
                               ),
                             );
                           },
@@ -229,7 +223,16 @@ class _DashboardState extends State<Dashboard> {
                     IconButton(
                       icon: const Icon(Icons.person),
                       iconSize: 35,
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          PageTransition(
+                            curve: Curves.linear,
+                            type: PageTransitionType.bottomToTop,
+                            child: UserInfo(),
+                          ),
+                        );
+                      },
                     ),
                   ],
                 ),
@@ -250,19 +253,42 @@ class _DashboardState extends State<Dashboard> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         IconButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              PageTransition(
+                                curve: Curves.linear,
+                                type: PageTransitionType.bottomToTop,
+                                child: Water(),
+                              ),
+                            );
+                          },
                           icon: Image.asset('images/water-tap.png'),
                         ),
                         IconButton(
-                          onPressed: () {},
-                          icon: Image.asset('images/energy.png'),
-                        ),
-                        IconButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              PageTransition(
+                                curve: Curves.linear,
+                                type: PageTransitionType.bottomToTop,
+                                child: Crops(),
+                              ),
+                            );
+                          },
                           icon: Image.asset('images/agriculture.png'),
                         ),
                         IconButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              PageTransition(
+                                curve: Curves.linear,
+                                type: PageTransitionType.bottomToTop,
+                                child: LifecycleCam(),
+                              ),
+                            );
+                          },
                           icon: Image.asset('images/lifecycle.png'),
                         ),
                       ],

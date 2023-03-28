@@ -6,6 +6,8 @@ import 'package:hydroferma5/home/notifications.dart';
 import 'package:hydroferma5/login+register/login/login.dart';
 import 'package:hydroferma5/responsive/tablet.dart';
 import 'package:hydroferma5/test/test.dart';
+import 'package:hydroferma5/util/waterchart.dart';
+import 'package:hydroferma5/water+nutrient/water.dart';
 // import 'package:hydroferma5/test/test.dart';
 import 'landing/mobile_land.dart';
 import 'login+register/login&register.dart';
@@ -54,7 +56,7 @@ class AppScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: MediaQuery.of(context).orientation == Orientation.portrait
-          ? Dashboard()
+          ? MobileLand()
           : TabletScaffold(),
     );
   }
