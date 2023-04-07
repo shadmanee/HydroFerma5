@@ -190,7 +190,7 @@ class _SidebarForHomeState extends State<SidebarForHome> {
                             ),
                           ),
                         ),
-                        child: Text('Connect System',
+                        child: Text('Connected System',
                             style:
                                 TextStyle(fontSize: 18, color: Colors.white)),
                         onPressed: () {
@@ -457,7 +457,7 @@ class _SidebarState extends State<Sidebar> {
                             ),
                           ),
                         ),
-                        child: Text('Connect System',
+                        child: Text('Connected System',
                             style:
                                 TextStyle(fontSize: 18, color: Colors.white)),
                         onPressed: () {

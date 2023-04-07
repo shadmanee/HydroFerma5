@@ -26,7 +26,7 @@ class _UserInfoState extends State<UserInfo> {
   Widget build(BuildContext context) {
     _photoUrl = _auth.currentUser?.photoURL ?? '';
     _userName = _auth.currentUser?.displayName ?? 'No Name Found';
-    _phoneNumber = _auth.currentUser?.phoneNumber ?? '';
+    _phoneNumber = _auth.currentUser?.phoneNumber ?? 'No Number Found';
     return Scaffold(
       key: _scaffoldKey,
       drawer: Sidebar(),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:hydroferma5/home/mobile_dashboard.dart';
+import 'package:hydroferma5/login+register/login/pwreset.dart';
 import 'package:hydroferma5/login+register/register/signup.dart';
 import 'package:hydroferma5/util/colors.dart';
 import 'package:hydroferma5/util/text_fields.dart';
@@ -38,6 +39,8 @@ class _LoginPageState extends State<LoginPage> {
           email: _emailTextController.text,
           password: _passwordTextController.text);
       // Navigate to the home screen if the sign-in is successful
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => Dashboard()));
     } on FirebaseAuthException catch (e) {
       // Show a toast message with the error message
       switch (e.code) {
@@ -61,8 +64,6 @@ class _LoginPageState extends State<LoginPage> {
         fontSize: 16.0,
       );
     }
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => Dashboard()));
   }
 
   @override
@@ -149,6 +150,16 @@ class _LoginPageState extends State<LoginPage> {
                                   style: TextStyle(color: Colors.black45),
                                 ),
                               ),
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  PageTransition(
+                                    curve: Curves.linear,
+                                    type: PageTransitionType.bottomToTop,
+                                    child: const ResetPassword(),
+                                  ),
+                                );
+                              },
                             )
                           ],
                         ),

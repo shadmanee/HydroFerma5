@@ -21,6 +21,8 @@ class _DashboardState extends State<Dashboard> {
   var notificationCount = 3; // TODO: Replace with actual notification count
   final pc = PanelController();
   String selectedModule = 'Water Supply';
+  bool water_pump = false;
+  bool nutrient_valve = true;
 
   String panelContent(String module) {
     switch (module) {
@@ -108,9 +110,8 @@ class _DashboardState extends State<Dashboard> {
                   ),
                 ),
                 Container(
-                  margin: const EdgeInsets.symmetric(
-                    horizontal: 25, vertical: 30
-                  ),
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 25, vertical: 30),
                   color: Colors.transparent,
                   child: Column(
                     children: [
@@ -307,7 +308,7 @@ class _DashboardState extends State<Dashboard> {
                             child: Container(
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(30),
-                                color: Color(0xff95D8EB),
+                                color: Color(0xffb1e2f3),
                                 boxShadow: [
                                   BoxShadow(
                                     color: Colors.grey.withOpacity(0.5),
@@ -317,6 +318,77 @@ class _DashboardState extends State<Dashboard> {
                                   ),
                                 ],
                               ),
+                              child: Expanded(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Text(
+                                      '3h',
+                                      style: TextStyle(
+                                          fontSize: 50,
+                                          fontWeight: FontWeight.w200,
+                                          color: Colors.black54),
+                                    ),
+                                    const Text(
+                                      '9m',
+                                      style: TextStyle(
+                                          fontSize: 50,
+                                          fontWeight: FontWeight.w200,
+                                          color: Colors.black54),
+                                    ),
+                                    const SizedBox(height: 5),
+                                    const Text(
+                                      'Since Last',
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w300,
+                                          color: Colors.black45),
+                                    ),
+                                    const SizedBox(height: 5),
+                                    const Text(
+                                      'Water Change',
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w300,
+                                          color: Colors.black45),
+                                    ),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        const Text(
+                                          'Water Pump',
+                                          style: TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.w400,
+                                              color: Colors.black45),
+                                        ),
+                                        const SizedBox(
+                                          width: 5,
+                                        ),
+                                        water_pump
+                                            ? const Text(
+                                                'ON',
+                                                style: TextStyle(
+                                                    fontSize: 18,
+                                                    fontWeight: FontWeight.w400,
+                                                    color: Colors.green),
+                                              )
+                                            : const Text(
+                                                'OFF',
+                                                style: TextStyle(
+                                                    fontSize: 18,
+                                                    fontWeight: FontWeight.w400,
+                                                    color: Colors.red),
+                                              ),
+                                      ],
+                                    )
+                                  ],
+                                ),
+                              ),
                             ),
                           ),
                           StaggeredGridTile.count(
@@ -325,15 +397,89 @@ class _DashboardState extends State<Dashboard> {
                             child: Container(
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(30),
-                                color: Color(0xff8BDAC7),
+                                color: const Color(0xffb1e3d8),
                                 boxShadow: [
                                   BoxShadow(
                                     color: Colors.grey.withOpacity(0.5),
                                     spreadRadius: 2,
                                     blurRadius: 5,
-                                    offset: Offset(0, 3),
+                                    offset: const Offset(0, 3),
                                   ),
                                 ],
+                              ),
+                              child: Expanded(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: const [
+                                        Icon(
+                                          Icons.thermostat,
+                                          size: 50,
+                                          color: Colors.black54,
+                                        ),
+                                        Text(
+                                          '25\u00B0',
+                                          style: TextStyle(
+                                              fontSize: 60,
+                                              fontWeight: FontWeight.w300,
+                                              color: Colors.black54),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      height: 15,
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceEvenly,
+                                      children: [
+                                        Row(
+                                          children: const [
+                                            Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 3),
+                                              child: Icon(
+                                                Icons.air_outlined,
+                                                size: 15,
+                                                color: Colors.black54,
+                                              ),
+                                            ),
+                                            Text(
+                                              '720hpa',
+                                              style: TextStyle(
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.w300,
+                                                  color: Colors.black54),
+                                            ),
+                                          ],
+                                        ),
+                                        Row(
+                                          children: const [
+                                            Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 3),
+                                              child: Icon(
+                                                Icons.heat_pump_outlined,
+                                                size: 15,
+                                                color: Colors.black54,
+                                              ),
+                                            ),
+                                            Text(
+                                              '32%',
+                                              style: TextStyle(
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.w300,
+                                                  color: Colors.black54),
+                                            ),
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
@@ -343,15 +489,122 @@ class _DashboardState extends State<Dashboard> {
                             child: Container(
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(30),
-                                color: Color(0xff95D8EB),
+                                color: const Color(0xffb1e2f3),
                                 boxShadow: [
                                   BoxShadow(
                                     color: Colors.grey.withOpacity(0.5),
                                     spreadRadius: 2,
                                     blurRadius: 5,
-                                    offset: Offset(0, 3),
+                                    offset: const Offset(0, 3),
                                   ),
                                 ],
+                              ),
+                              child: Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.all(12.0),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: const [
+                                          Text(
+                                            'pH',
+                                            style: TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.w200,
+                                              color: Colors.black54,
+                                            ),
+                                          ),
+                                          Text(
+                                            '6.1',
+                                            style: TextStyle(
+                                              fontSize: 30,
+                                              color: Colors.black54,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: const [
+                                          Text(
+                                            'EC',
+                                            style: TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.w200,
+                                              color: Colors.black54,
+                                            ),
+                                          ),
+                                          Text(
+                                            '2.59',
+                                            style: TextStyle(
+                                              fontSize: 30,
+                                              color: Colors.black54,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceEvenly,
+                                        children: const [
+                                          Text(
+                                            'TDS',
+                                            style: TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.w200,
+                                              color: Colors.black54,
+                                            ),
+                                          ),
+                                          Text(
+                                            '2200',
+                                            style: TextStyle(
+                                              fontSize: 30,
+                                              color: Colors.black54,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(
+                                        height: 10,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          const Text(
+                                            'Nutrient',
+                                            style: TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.w400,
+                                                color: Colors.black45),
+                                          ),
+                                          const SizedBox(width: 5),
+                                          nutrient_valve
+                                              ? const Text(
+                                                  'ON',
+                                                  style: TextStyle(
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                      color: Colors.green),
+                                                )
+                                              : const Text(
+                                                  'OFF',
+                                                  style: TextStyle(
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                      color: Colors.red),
+                                                ),
+                                        ],
+                                      )
+                                    ],
+                                  ),
+                                ),
                               ),
                             ),
                           ),
@@ -361,7 +614,7 @@ class _DashboardState extends State<Dashboard> {
                             child: Container(
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(30),
-                                color: Color(0xff8BDAC7),
+                                color: Color(0xffb1e3d8),
                                 boxShadow: [
                                   BoxShadow(
                                     color: Colors.grey.withOpacity(0.5),
@@ -370,6 +623,66 @@ class _DashboardState extends State<Dashboard> {
                                     offset: Offset(0, 3),
                                   ),
                                 ],
+                              ),
+                              child: Expanded(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Text(
+                                      'Plants',
+                                      style: TextStyle(
+                                          fontSize: 24,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.black54),
+                                    ),
+                                    const SizedBox(height: 5),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: const [
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 3),
+                                          child: Icon(
+                                            Icons.grass_outlined,
+                                            color: Color(0xff44b230),
+                                            size: 16,
+                                          ),
+                                        ),
+                                        Text(
+                                          'Coriander',
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w300,
+                                              color: Colors.black45),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 5),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: const [
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 3),
+                                          child: Icon(
+                                            Icons.grass_outlined,
+                                            color: Color(0xff44b230),
+                                            size: 16,
+                                          ),
+                                        ),
+                                        Text(
+                                          'Malabar Spinach',
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w300,
+                                              color: Colors.black45),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
