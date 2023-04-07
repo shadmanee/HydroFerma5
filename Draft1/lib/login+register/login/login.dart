@@ -102,7 +102,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(40, 150-70, 40, 0),
+                    padding: const EdgeInsets.fromLTRB(40, 150 - 70, 40, 0),
                     child: Column(
                       children: [
                         Image.asset('images/logo-green.png'),
@@ -126,26 +126,12 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         Row(
                           children: [
-                            Checkbox(
-                              value: this.value,
-                              onChanged: changeState,
-                              activeColor: Color(0xff48BFA3),
-                              side: MaterialStateBorderSide.resolveWith(
-                                    (states) =>
-                                    BorderSide(width: 1.5, color: Colors.black45),
-                              ),
-                            ),
-                            GestureDetector(
-                              child: Text(
-                                'Remember Me',
-                                style: TextStyle(color: Colors.black45),
-                              ),
-                            ),
                             Expanded(child: Container()),
                             GestureDetector(
                               child: Container(
-                                padding: EdgeInsets.only(right: 15),
-                                child: Text(
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 15),
+                                child: const Text(
                                   'Forgot Password?',
                                   style: TextStyle(color: Colors.black45),
                                 ),
@@ -164,10 +150,9 @@ class _LoginPageState extends State<LoginPage> {
                           ],
                         ),
                         LoginRegisterButton(context, 'Log In', () {
-                          print("Signing In");
                           _signIn();
                         }),
-                        SizedBox(
+                        const SizedBox(
                           height: 30,
                         ),
                         SignUpOption(),
@@ -182,7 +167,6 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
-
 
   Row SignUpOption() {
     return Row(

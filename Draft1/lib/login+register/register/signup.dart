@@ -21,25 +21,7 @@ class _SignUpPageState extends State<SignUpPage> {
   TextEditingController _passwordTextController = TextEditingController();
   TextEditingController _emailTextController = TextEditingController();
   TextEditingController _unameTextController = TextEditingController();
-  bool value = false;
-
-  void changeState(bool? val) {
-    setState(() {
-      this.value = !value;
-    });
-  }
-
-  // FirebaseAuth.instance
-  //     .createUserWithEmailAndPassword(
-  // email: _emailTextController.text,
-  // password: _passwordTextController.text)
-  //     .then((value) {
-  // print("Creating New Account");
-  // Navigator.push(context,
-  // MaterialPageRoute(builder: (context) => Dashboard()));
-  // }).onError((error, stackTrace) {
-  // print("Error ${error.toString()}");
-  // });
+  bool isChecked = false;
 
   Future<void> signUpWithEmail(
       String email, String password, String displayName) async {
@@ -121,32 +103,14 @@ class _SignUpPageState extends State<SignUpPage> {
                             Icons.lock_person_outlined,
                             true,
                             _passwordTextController),
-                        Row(
-                          children: [
-                            Checkbox(
-                              value: this.value,
-                              onChanged: changeState,
-                              activeColor: Color(0xff48BFA3),
-                              side: MaterialStateBorderSide.resolveWith(
-                                (states) => BorderSide(
-                                    width: 1.5, color: Colors.black45),
-                              ),
-                            ),
-                            Text('I agree to the ',
-                                style: TextStyle(color: Colors.black45)),
-                            Text('terms and conditions.',
-                                style: TextStyle(
-                                    color: Colors.black45,
-                                    fontWeight: FontWeight.bold)),
-                          ],
-                        ),
+                        const SizedBox(height: 10),
                         LoginRegisterButton(context, 'Sign Up', () {
                           signUpWithEmail(
                               _emailTextController.text,
                               _passwordTextController.text,
                               _unameTextController.text);
                         }),
-                        SizedBox(
+                        const SizedBox(
                           height: 30,
                         ),
                         LogInOption(),

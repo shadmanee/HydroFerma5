@@ -84,7 +84,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                     child: Row(
                       children: [
                         IconButton(
-                          icon: Icon(
+                          icon: const Icon(
                             Icons.arrow_back_ios,
                             color: Colors.black45,
                           ),
@@ -99,23 +99,20 @@ class _ResetPasswordState extends State<ResetPassword> {
                     padding: MediaQuery.of(context).size.width <= 450
                         ? EdgeInsets.fromLTRB(40, 150 - 90, 40,
                         MediaQuery.of(context).size.height - 150)
-                        : EdgeInsets.fromLTRB(100, 200, 100, 0),
+                        : const EdgeInsets.fromLTRB(100, 200, 100, 0),
                     child: Column(
                       children: [
                         Image.asset('images/logo-green.png'),
-                        SizedBox(
+                        const SizedBox(
                           height: 30,
                         ),
                         reusableTextField("Email Address", Icons.email, false,
                             _emailTextController),
-                        SizedBox(
+                        const SizedBox(
                           height: 20,
                         ),
                         LoginRegisterButton(context, 'Reset', () {
-                          signUpWithEmail(
-                              _emailTextController.text,
-                              _passwordTextController.text,
-                              _unameTextController.text);
+                          FirebaseAuth.instance.sendPasswordResetEmail(email: _emailTextController.text).then((value) => Navigator.pop(context));
                         }),
                       ],
                     ),
