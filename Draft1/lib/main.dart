@@ -1,8 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:hydroferma5/bluetooth/bluetooth.dart';
 import 'package:hydroferma5/home/mobile_dashboard.dart';
 import 'package:hydroferma5/home/notifications.dart';
+import 'package:hydroferma5/lifecycle/lifecycle_cam.dart';
 import 'package:hydroferma5/login+register/login/login.dart';
 import 'package:hydroferma5/responsive/tablet.dart';
 import 'package:hydroferma5/test/test.dart';
@@ -14,7 +14,7 @@ import 'login+register/login&register.dart';
 import 'login+register/register/signup.dart';
 // import 'package:firebase_messaging/firebase_messaging.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
@@ -42,7 +42,6 @@ class Hydroferma extends StatelessWidget {
       routes: {
         '/': (context) => AppScreen(),
         '/home': (context) => Dashboard(),
-        '/bluetooth': (context) => ConnectBluetooth(),
         // add other routes here
       },
     );
@@ -56,7 +55,7 @@ class AppScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: MediaQuery.of(context).orientation == Orientation.portrait
-          ? const LandingPage()
+          ? LifecycleCam()
           : const TabletScaffold(),
     );
   }

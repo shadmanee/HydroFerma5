@@ -257,7 +257,7 @@ class Recommended extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const Text(
-                          'San Francisco',
+                          'Dhaka',
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 36,

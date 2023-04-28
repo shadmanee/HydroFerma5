@@ -1,3 +1,4 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:hydroferma5/croprecommendation/search.dart';
@@ -9,6 +10,10 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 import '../util/sidebar.dart';
 import '../water+nutrient/water.dart';
 import 'notifications.dart';
+
+Map<dynamic, dynamic> lastRead = {};
+String temperature = '';
+String humidity = '';
 
 class Dashboard extends StatefulWidget {
   const Dashboard({Key? key}) : super(key: key);
@@ -36,6 +41,34 @@ class _DashboardState extends State<Dashboard> {
   }
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  @override
+  void initState() {
+    super.initState();
+    getLastReading();
+  }
+
+  void getLastReading() async {
+    DatabaseReference dbRef =
+        FirebaseDatabase.instance.ref().child('/sensor_data/');
+
+    dbRef.onValue.listen((event) {
+      List<dynamic>? readings = event.snapshot.value as List<dynamic>?;
+
+      if (readings != null && readings.isNotEmpty) {
+        Map<dynamic, dynamic>? lastReading =
+            readings.last as Map<dynamic, dynamic>?;
+        if (lastReading != null) {
+          lastReading['reading_id'] = event.snapshot.key;
+          lastRead = lastReading;
+          setState(() {
+            temperature = lastRead['temperature'].toString();
+            humidity = lastRead['humidity'].toString();
+          });
+        }
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -414,18 +447,22 @@ class _DashboardState extends State<Dashboard> {
                                     Row(
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
-                                      children: const [
-                                        Icon(
+                                      children: [
+                                        const Icon(
                                           Icons.thermostat,
-                                          size: 50,
+                                          size: 40,
                                           color: Colors.black54,
                                         ),
                                         Text(
-                                          '25\u00B0',
+                                          '$temperature\u00B0C',
                                           style: TextStyle(
-                                              fontSize: 60,
-                                              fontWeight: FontWeight.w300,
-                                              color: Colors.black54),
+                                            fontSize: 25,
+                                            fontWeight: FontWeight.w300,
+                                            color: lastRead['temp_meter'] ==
+                                                    "green"
+                                                ? Colors.black54
+                                                : Colors.red,
+                                          ),
                                         ),
                                       ],
                                     ),
@@ -457,8 +494,8 @@ class _DashboardState extends State<Dashboard> {
                                           ],
                                         ),
                                         Row(
-                                          children: const [
-                                            Padding(
+                                          children: [
+                                            const Padding(
                                               padding: EdgeInsets.symmetric(
                                                   horizontal: 3),
                                               child: Icon(
@@ -468,11 +505,11 @@ class _DashboardState extends State<Dashboard> {
                                               ),
                                             ),
                                             Text(
-                                              '32%',
+                                              '$humidity%',
                                               style: TextStyle(
                                                   fontSize: 15,
                                                   fontWeight: FontWeight.w300,
-                                                  color: Colors.black54),
+                                                  color: lastRead['hum_meter'] == "green" ? Colors.black54 : Colors.red),
                                             ),
                                           ],
                                         )

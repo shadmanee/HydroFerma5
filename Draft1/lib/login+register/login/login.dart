@@ -8,6 +8,7 @@ import 'package:hydroferma5/login+register/register/signup.dart';
 import 'package:hydroferma5/util/colors.dart';
 import 'package:hydroferma5/util/text_fields.dart';
 import 'package:page_transition/page_transition.dart';
+import '../../test/test.dart';
 import '../../util/buttons.dart';
 
 class LoginPage extends StatefulWidget {
@@ -41,6 +42,7 @@ class _LoginPageState extends State<LoginPage> {
       // Navigate to the home screen if the sign-in is successful
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => Dashboard()));
+    } on FirebaseAuthException catch (e) {
     } on FirebaseAuthException catch (e) {
       // Show a toast message with the error message
       switch (e.code) {

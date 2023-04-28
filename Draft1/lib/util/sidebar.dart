@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:hydroferma5/bluetooth/bluetooth.dart';
 import 'package:hydroferma5/croprecommendation/search.dart';
 import 'package:hydroferma5/home/mobile_dashboard.dart';
 import 'package:hydroferma5/lifecycle/lifecycle_cam.dart';
+import 'package:hydroferma5/home/connected_system.dart';
 import 'package:page_transition/page_transition.dart';
 
 import '../login+register/login/login.dart';
@@ -199,7 +199,7 @@ class _SidebarForHomeState extends State<SidebarForHome> {
                             PageTransition(
                               curve: Curves.linear,
                               type: PageTransitionType.bottomToTop,
-                              child: const ConnectBluetooth(),
+                              child: MyTable(),
                             ),
                           );
                         },
@@ -466,7 +466,7 @@ class _SidebarState extends State<Sidebar> {
                             PageTransition(
                               curve: Curves.linear,
                               type: PageTransitionType.bottomToTop,
-                              child: const ConnectBluetooth(),
+                              child: MyTable(),
                             ),
                           );
                         },

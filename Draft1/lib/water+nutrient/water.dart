@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:hydroferma5/bluetooth/connected.dart';
 import 'package:hydroferma5/util/sidebar.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:tiny_charts/tiny_charts.dart';
@@ -318,7 +317,7 @@ class _WaterState extends State<Water> {
                                 PageTransition(
                                   curve: Curves.linear,
                                   type: PageTransitionType.bottomToTop,
-                                  child: const ConnectedDevices(),
+                                  child: const Water(),
                                 ),
                               );
                             },

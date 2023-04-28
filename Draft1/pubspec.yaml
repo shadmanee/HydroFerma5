@@ -41,7 +41,6 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   http: ^0.13.5
-  flutter_blue: ^0.8.0
   animated_bottom_navigation_bar: ^1.1.0+1
   auto_size_text: ^3.0.0
   circular_reveal_animation: ^2.0.1
@@ -62,6 +61,11 @@ dependencies:
   syncfusion_flutter_charts: ^21.1.35
   tiny_charts: ^0.1.0
   camera: ^0.10.3+2
+  firebase_database: ^10.1.0
+  path_provider: ^2.0.14
+  path: ^1.8.2
+  firebase_storage: ^11.1.1
+  image_picker: ^0.8.7+4
 
 dev_dependencies:
   flutter_test:
