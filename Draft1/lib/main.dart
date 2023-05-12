@@ -55,7 +55,7 @@ class AppScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: MediaQuery.of(context).orientation == Orientation.portrait
-          ? const LifecycleCam()
+          ? const MobileLand()
           : const TabletScaffold(),
     );
   }

@@ -1,0 +1,3 @@
+0 Seedling
+1 Premature
+2 Harvest
