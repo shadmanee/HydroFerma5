@@ -71,7 +71,6 @@ dependencies:
       ref: 783f15e5a87126159147d8ea30b98eea9207ac70
   url_launcher: ^6.1.10
   flutter_image_compress: ^2.0.0
-  syncfusion_flutter_charts: ^18.4.49
 
 dev_dependencies:
   flutter_test:

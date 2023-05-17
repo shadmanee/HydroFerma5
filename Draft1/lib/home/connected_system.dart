@@ -306,7 +306,7 @@ class _MyTableState extends State<MyTable> {
       alignment: Alignment.center,
       margin: const EdgeInsets.all(10),
       padding: const EdgeInsets.all(10),
-      height: 110,
+      height: 150,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20.0),
         gradient: const LinearGradient(

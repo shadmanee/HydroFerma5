@@ -4,6 +4,7 @@ import 'package:hydroferma5/util/sidebar.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:tiny_charts/tiny_charts.dart';
 
+import '../home/connected_system.dart';
 import '../home/notifications.dart';
 import '../home/user.dart';
 import '../util/waterchart.dart';
@@ -267,43 +268,43 @@ class _WaterState extends State<Water> {
                           child: Text(
                             "Usage of Water from Jan '21 - Nov '22",
                             style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w200,
+                              fontSize: 18,
+                              fontWeight: FontWeight.w900,
                             ),
                           ),
                         ),
-                        Container(
-                          margin: const EdgeInsets.only(right: 10),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.black),
-                            borderRadius: BorderRadius.circular(10.0)
-                          ),
-                          child: IconButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                PageTransition(
-                                  curve: Curves.linear,
-                                  type: PageTransitionType.bottomToTop,
-                                  child: const ChartPage(),
-                                ),
-                              );
-                            },
-                            icon: const Icon(Icons.show_chart),
-                          ),
-                        )
+                        // Container(
+                        //   margin: const EdgeInsets.only(right: 10),
+                        //   decoration: BoxDecoration(
+                        //     border: Border.all(color: Colors.black),
+                        //     borderRadius: BorderRadius.circular(10.0)
+                        //   ),
+                        //   child: IconButton(
+                        //     onPressed: () {
+                        //       // Navigator.push(
+                        //       //   context,
+                        //       //   PageTransition(
+                        //       //     curve: Curves.linear,
+                        //       //     type: PageTransitionType.bottomToTop,
+                        //       //     child: const ChartPage(),
+                        //       //   ),
+                        //       // );
+                        //     },
+                        //     icon: const Icon(Icons.show_chart),
+                        //   ),
+                        // )
                       ],
                     ),
-                    SizedBox(
-                      height: 300,
-                      child: LineChart(),
-                    ),
+                    // SizedBox(
+                    //   height: 300,
+                    //   child: LineChart(),
+                    // ),
                     const Divider(),
                     Row(
                       children: [
                         const SizedBox(width: 12),
                         const Text(
-                          'Connected Devices',
+                          'Connected System',
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.w400,
@@ -317,7 +318,7 @@ class _WaterState extends State<Water> {
                                 PageTransition(
                                   curve: Curves.linear,
                                   type: PageTransitionType.bottomToTop,
-                                  child: const Water(),
+                                  child: const SystemOptions(),
                                 ),
                               );
                             },
@@ -362,48 +363,48 @@ class _WaterState extends State<Water> {
   }
 }
 
-class ChartPage extends StatefulWidget {
-  const ChartPage({Key? key}) : super(key: key);
+// class ChartPage extends StatefulWidget {
+//   const ChartPage({Key? key}) : super(key: key);
+//
+//   @override
+//   State<ChartPage> createState() => _ChartPageState();
+// }
 
-  @override
-  State<ChartPage> createState() => _ChartPageState();
-}
-
-class _ChartPageState extends State<ChartPage> {
-  @override
-  Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-          body: Column(
-        children: [
-          Row(
-            children: [
-              IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: const Icon(Icons.close, size: 30),
-              )
-            ],
-          ),
-          Column(
-            children: [
-              const Text(
-                'Water Usage',
-                style: TextStyle(fontSize: 30),
-              ),
-              const Text(
-                "Jan '21 - Nov '22",
-                style: TextStyle(fontSize: 25, fontWeight: FontWeight.w300),
-              ),
-              SizedBox(
-                height: 400,
-                child: LineChart(),
-              ),
-            ],
-          )
-        ],
-      )),
-    );
-  }
-}
+// class _ChartPageState extends State<ChartPage> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return SafeArea(
+//       child: Scaffold(
+//           body: Column(
+//         children: [
+//           Row(
+//             children: [
+//               IconButton(
+//                 onPressed: () {
+//                   Navigator.pop(context);
+//                 },
+//                 icon: const Icon(Icons.close, size: 30),
+//               )
+//             ],
+//           ),
+//           Column(
+//             children: [
+//               const Text(
+//                 'Water Usage',
+//                 style: TextStyle(fontSize: 30),
+//               ),
+//               const Text(
+//                 "Jan '21 - Nov '22",
+//                 style: TextStyle(fontSize: 25, fontWeight: FontWeight.w300),
+//               ),
+//               SizedBox(
+//                 height: 400,
+//                 child: LineChart(),
+//               ),
+//             ],
+//           )
+//         ],
+//       )),
+//     );
+//   }
+// }

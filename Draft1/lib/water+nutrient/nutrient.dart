@@ -312,37 +312,6 @@ class _NutrientState extends State<Nutrient> {
                         ],
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(right: 20),
-                      child: TextButton(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: const [
-                            Icon(
-                              Icons.add,
-                              color: Colors.grey,
-                            ),
-                            Text(
-                              'Add More',
-                              style: TextStyle(
-                                color: Colors.grey,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
-                          ],
-                        ),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            PageTransition(
-                              curve: Curves.linear,
-                              type: PageTransitionType.bottomToTop,
-                              child: const Crops(),
-                            ),
-                          );
-                        },
-                      ),
-                    )
                   ],
                 ),
               ),
