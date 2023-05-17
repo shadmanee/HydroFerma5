@@ -1,6 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:get/get.dart';
 import 'package:hydroferma5/croprecommendation/search.dart';
 import 'package:hydroferma5/home/user.dart';
 import 'package:hydroferma5/lifecycle/lifecycle_cam.dart';
@@ -12,8 +13,9 @@ import '../water+nutrient/water.dart';
 import 'notifications.dart';
 
 Map<dynamic, dynamic> lastRead = {};
-String temperature = '';
-String humidity = '';
+double temperature = 25.67;
+double humidity = 63.7;
+double water = 27.44;
 
 class Dashboard extends StatefulWidget {
   const Dashboard({Key? key}) : super(key: key);
@@ -45,26 +47,40 @@ class _DashboardState extends State<Dashboard> {
   @override
   void initState() {
     super.initState();
-    getLastReading();
+    setupSensorDataListener();
   }
 
-  void getLastReading() async {
+  void setupSensorDataListener() async {
     DatabaseReference dbRef =
         FirebaseDatabase.instance.ref().child('/sensor_data/');
 
     dbRef.onValue.listen((event) {
-      List<dynamic>? readings = event.snapshot.value as List<dynamic>?;
+      print("DBREEF");
+      DataSnapshot snapshot = event.snapshot;
+      print('Snapshot value: ${snapshot.value}');
 
-      if (readings != null && readings.isNotEmpty) {
-        Map<dynamic, dynamic>? lastReading =
-            readings.last as Map<dynamic, dynamic>?;
-        if (lastReading != null) {
-          lastReading['reading_id'] = event.snapshot.key;
+      if (snapshot.value != null) {
+        List<dynamic> readings = snapshot.value as List<dynamic>;
+
+        if (readings.isNotEmpty) {
+          Map<dynamic, dynamic> lastReading =
+              readings.last as Map<dynamic, dynamic>;
           lastRead = lastReading;
-          setState(() {
-            temperature = lastRead['temperature'].toString();
-            humidity = lastRead['humidity'].toString();
-          });
+
+          if (lastRead.containsKey('temperature')) {
+            temperature = lastRead['temperature'];
+          }
+
+          if (lastRead.containsKey('humidity')) {
+            humidity = lastRead['humidity'];
+          }
+
+          if (lastRead.containsKey('water')) {
+            water = lastRead['water'];
+            water = double.parse(water.toStringAsFixed(1));
+          }
+
+          setState(() {});
         }
       }
     });
@@ -274,62 +290,10 @@ class _DashboardState extends State<Dashboard> {
               Expanded(
                 child: ListView(
                   children: [
+                    const SizedBox(height: 50),
                     Container(
-                      margin: EdgeInsets.only(top: 20, bottom: 20),
-                      alignment: Alignment.center,
-                      child: const Text('Quick Access',
-                          style: TextStyle(
-                              fontWeight: FontWeight.w300,
-                              fontSize: 12,
-                              color: Color(0xff484646))),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        IconButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              PageTransition(
-                                curve: Curves.linear,
-                                type: PageTransitionType.bottomToTop,
-                                child: Water(),
-                              ),
-                            );
-                          },
-                          icon: Image.asset('images/water-tap.png'),
-                        ),
-                        IconButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              PageTransition(
-                                curve: Curves.linear,
-                                type: PageTransitionType.bottomToTop,
-                                child: Crops(),
-                              ),
-                            );
-                          },
-                          icon: Image.asset('images/agriculture.png'),
-                        ),
-                        IconButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              PageTransition(
-                                curve: Curves.linear,
-                                type: PageTransitionType.bottomToTop,
-                                child: LifecycleCam(),
-                              ),
-                            );
-                          },
-                          icon: Image.asset('images/lifecycle.png'),
-                        ),
-                      ],
-                    ),
-                    Container(
-                      margin:
-                          EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 20),
                       child: StaggeredGrid.count(
                         crossAxisCount: 2,
                         mainAxisSpacing: 16,
@@ -341,13 +305,13 @@ class _DashboardState extends State<Dashboard> {
                             child: Container(
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(30),
-                                color: Color(0xffb1e2f3),
+                                color: const Color(0xffb1e2f3),
                                 boxShadow: [
                                   BoxShadow(
                                     color: Colors.grey.withOpacity(0.5),
                                     spreadRadius: 2,
                                     blurRadius: 5,
-                                    offset: Offset(0, 3),
+                                    offset: const Offset(0, 3),
                                   ),
                                 ],
                               ),
@@ -458,8 +422,10 @@ class _DashboardState extends State<Dashboard> {
                                           style: TextStyle(
                                             fontSize: 25,
                                             fontWeight: FontWeight.w300,
-                                            color: lastRead['temp_meter'] ==
-                                                    "green"
+                                            color: (temperature >=
+                                                        20) &
+                                                    (temperature <=
+                                                        25)
                                                 ? Colors.black54
                                                 : Colors.red,
                                           ),
@@ -473,26 +439,6 @@ class _DashboardState extends State<Dashboard> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.spaceEvenly,
                                       children: [
-                                        Row(
-                                          children: const [
-                                            Padding(
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal: 3),
-                                              child: Icon(
-                                                Icons.air_outlined,
-                                                size: 15,
-                                                color: Colors.black54,
-                                              ),
-                                            ),
-                                            Text(
-                                              '720hpa',
-                                              style: TextStyle(
-                                                  fontSize: 15,
-                                                  fontWeight: FontWeight.w300,
-                                                  color: Colors.black54),
-                                            ),
-                                          ],
-                                        ),
                                         Row(
                                           children: [
                                             const Padding(
@@ -509,10 +455,41 @@ class _DashboardState extends State<Dashboard> {
                                               style: TextStyle(
                                                   fontSize: 15,
                                                   fontWeight: FontWeight.w300,
-                                                  color: lastRead['hum_meter'] == "green" ? Colors.black54 : Colors.red),
+                                                  color: (40 <=
+                                                              humidity) &
+                                                          (65 >=
+                                                              humidity)
+                                                      ? Colors.black54
+                                                      : Colors.red),
                                             ),
                                           ],
-                                        )
+                                        ),
+                                        Row(
+                                          children: [
+                                            const Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 3),
+                                              child: Icon(
+                                                Icons.water_drop_outlined,
+                                                size: 15,
+                                                color: Colors.black54,
+                                              ),
+                                            ),
+                                            Text(
+                                              '$water\u00B0C',
+                                              style: TextStyle(
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.w300,
+                                                color: (water >=
+                                                            16) &
+                                                        (water <=
+                                                            20)
+                                                    ? Colors.black54
+                                                    : Colors.red,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ],
                                     ),
                                   ],
@@ -687,30 +664,7 @@ class _DashboardState extends State<Dashboard> {
                                           ),
                                         ),
                                         Text(
-                                          'Coriander',
-                                          style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w300,
-                                              color: Colors.black45),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(height: 5),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: const [
-                                        Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: 3),
-                                          child: Icon(
-                                            Icons.grass_outlined,
-                                            color: Color(0xff44b230),
-                                            size: 16,
-                                          ),
-                                        ),
-                                        Text(
-                                          'Malabar Spinach',
+                                          'Lettuce',
                                           style: TextStyle(
                                               fontSize: 16,
                                               fontWeight: FontWeight.w300,

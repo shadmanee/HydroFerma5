@@ -5,6 +5,231 @@ import 'package:flutter/material.dart';
 
 late double current;
 
+class SystemOptions extends StatefulWidget {
+  const SystemOptions({Key? key}) : super(key: key);
+
+  @override
+  State<SystemOptions> createState() => _SystemOptionsState();
+}
+
+class _SystemOptionsState extends State<SystemOptions> {
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Scaffold(
+        body: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: const [
+                  BackButton(),
+                  Text(
+                    'Connected System Options',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              OptionTile(
+                title: 'Sensors',
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const MyTable()),
+                  );
+                },
+              ),
+              OptionTile(
+                title: 'Water Control',
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const WaterControlPage()),
+                  );
+                },
+              ),
+              OptionTile(
+                title: 'Nutrient Control',
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const NutrientControlPage()),
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class OptionTile extends StatelessWidget {
+  final String title;
+  final VoidCallback onPressed;
+
+  const OptionTile({
+    super.key,
+    required this.title,
+    required this.onPressed,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      title: Text(title),
+      trailing: const Icon(Icons.arrow_forward),
+      onTap: onPressed,
+    );
+  }
+}
+
+class WaterControlPage extends StatefulWidget {
+  const WaterControlPage({super.key});
+
+  @override
+  _WaterControlPageState createState() => _WaterControlPageState();
+}
+
+class _WaterControlPageState extends State<WaterControlPage> {
+  bool _isTapped = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: Center(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Row(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.arrow_back_ios),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                ],
+              ),
+              const SizedBox(height: 50),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  Text("WATER PUMP",
+                      style:
+                          TextStyle(fontSize: 30, fontWeight: FontWeight.w700))
+                ],
+              ),
+              const SizedBox(height: 20),
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _isTapped = !_isTapped;
+                  });
+                },
+                child: Container(
+                    width: 200,
+                    height: 200,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: _isTapped ? Colors.red : Colors.green,
+                        width: 4,
+                      ),
+                    ),
+                    child: Center(
+                      child: _isTapped
+                          ? const Text("OFF", style: TextStyle(fontSize: 30))
+                          : const Text("ON", style: TextStyle(fontSize: 30)),
+                    )),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class NutrientControlPage extends StatefulWidget {
+  const NutrientControlPage({super.key});
+
+  @override
+  _NutrientControlPageState createState() => _NutrientControlPageState();
+}
+
+class _NutrientControlPageState extends State<NutrientControlPage> {
+  bool _isTapped = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: Center(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Row(
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.arrow_back_ios),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                ],
+              ),
+              const SizedBox(height: 50),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  Text("NUTRIENT VALVE",
+                      style:
+                      TextStyle(fontSize: 30, fontWeight: FontWeight.w700))
+                ],
+              ),
+              const SizedBox(height: 20),
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _isTapped = !_isTapped;
+                  });
+                },
+                child: Container(
+                    width: 200,
+                    height: 200,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: _isTapped ? Colors.red : Colors.green,
+                        width: 4,
+                      ),
+                    ),
+                    child: Center(
+                      child: _isTapped
+                          ? const Text("OFF", style: TextStyle(fontSize: 30))
+                          : const Text("ON", style: TextStyle(fontSize: 30)),
+                    )),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class MyTable extends StatefulWidget {
   const MyTable({Key? key}) : super(key: key);
 
@@ -15,7 +240,7 @@ class MyTable extends StatefulWidget {
 class _MyTableState extends State<MyTable> {
   late Query dbRef;
   DatabaseReference reference =
-  FirebaseDatabase.instance.ref().child('/sensor_data/');
+      FirebaseDatabase.instance.ref().child('/sensor_data/');
 
   List<Map> readings = [];
 
@@ -56,16 +281,16 @@ class _MyTableState extends State<MyTable> {
   void _onEntryRemoved(DatabaseEvent event) {
     setState(() {
       readings.removeWhere(
-              (element) => element['reading_id'] == event.snapshot.key);
+          (element) => element['reading_id'] == event.snapshot.key);
     });
   }
 
   Future<double?> getLastReading() async {
     DatabaseReference dbRef =
-    FirebaseDatabase.instance.ref().child('/sensor_data/');
+        FirebaseDatabase.instance.ref().child('/sensor_data/');
 
     DataSnapshot snapshot =
-    (await dbRef.orderByKey().limitToLast(1).once()) as DataSnapshot;
+        (await dbRef.orderByKey().limitToLast(1).once()) as DataSnapshot;
 
     Map? reading = snapshot.value as Map?;
 
@@ -95,23 +320,35 @@ class _MyTableState extends State<MyTable> {
           reading['reading_id'].toString(),
           style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
         ),
-        title: Text(
-          "Temperature: ${reading['temperature']}\u{00B0}C",
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w400,
-            color:
-            reading['temp_meter'] == "green" ? Colors.black54 : Colors.red,
-          ),
-        ),
-        subtitle: Text(
-          "Humidity: ${reading['humidity']}%",
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.w500,
-            color:
-            reading['hum_meter'] == "green" ? Colors.black54 : Colors.red,
-          ),
+        title: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              "Temperature: ${reading['temperature']}\u{00B0}C",
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w400,
+                color: Colors.black54,
+              ),
+            ),
+            Text(
+              "Water Temperature: ${double.parse(reading['water'].toStringAsFixed(1))}\u{00B0}C",
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w400,
+                color: Colors.black54,
+              ),
+            ),
+            Text(
+              "Humidity: ${reading['humidity']}%",
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w500,
+                color: Colors.black54,
+              ),
+            ),
+          ],
         ),
       ),
     );

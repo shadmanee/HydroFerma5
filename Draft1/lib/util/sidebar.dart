@@ -75,18 +75,18 @@ class _SidebarForHomeState extends State<SidebarForHome> {
                   children: [
                     ConstrainedBox(
                       constraints:
-                          BoxConstraints.tightFor(height: 60, width: 280),
+                      BoxConstraints.tightFor(height: 60, width: 280),
                       child: ElevatedButton(
                         style: ButtonStyle(
                           backgroundColor:
-                              MaterialStateProperty.resolveWith((states) {
+                          MaterialStateProperty.resolveWith((states) {
                             if (states.contains(MaterialState.pressed)) {
                               return Color(0xff52799b);
                             }
                             return Color(0xff6CA3D1);
                           }),
                           shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
+                          MaterialStateProperty.all<RoundedRectangleBorder>(
                             RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(
                                 (6.0),
@@ -94,12 +94,12 @@ class _SidebarForHomeState extends State<SidebarForHome> {
                             ),
                           ),
                         ),
-                        child: Text('Water & Nutrient Supply',
+                        child: Text('Dashboard',
                             style:
-                                TextStyle(fontSize: 18, color: Colors.white)),
+                            TextStyle(fontSize: 18, color: Colors.white)),
                         onPressed: () {
                           Route route =
-                              MaterialPageRoute(builder: (context) => Water());
+                          MaterialPageRoute(builder: (context) => Dashboard());
                           Navigator.push(context, route);
                         },
                       ),
@@ -126,12 +126,12 @@ class _SidebarForHomeState extends State<SidebarForHome> {
                             ),
                           ),
                         ),
-                        child: Text('Crop Recommendation',
+                        child: Text('Water & Nutrient Supply',
                             style:
                                 TextStyle(fontSize: 18, color: Colors.white)),
                         onPressed: () {
                           Route route =
-                              MaterialPageRoute(builder: (context) => Crops());
+                              MaterialPageRoute(builder: (context) => Water());
                           Navigator.push(context, route);
                         },
                       ),
@@ -190,7 +190,7 @@ class _SidebarForHomeState extends State<SidebarForHome> {
                             ),
                           ),
                         ),
-                        child: Text('Connected System',
+                        child: const Text('Connected System',
                             style:
                                 TextStyle(fontSize: 18, color: Colors.white)),
                         onPressed: () {
@@ -199,54 +199,41 @@ class _SidebarForHomeState extends State<SidebarForHome> {
                             PageTransition(
                               curve: Curves.linear,
                               type: PageTransitionType.bottomToTop,
-                              child: MyTable(),
+                              child: const SystemOptions(),
                             ),
                           );
                         },
                       ),
                     ),
                     Divider(),
-                    ListTile(
-                      trailing: Icon(
-                        Icons.home,
-                        color: Colors.white,
+                    ConstrainedBox(
+                      constraints:
+                      BoxConstraints.tightFor(height: 60, width: 280),
+                      child: ElevatedButton(
+                        style: ButtonStyle(
+                          backgroundColor:
+                          MaterialStateProperty.resolveWith((states) {
+                            if (states.contains(MaterialState.pressed)) {
+                              return Color(0xff52799b);
+                            }
+                            return Color(0xff6CA3D1);
+                          }),
+                          shape:
+                          MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                (6.0),
+                              ),
+                            ),
+                          ),
+                        ),
+                        child: const Text('Log Out',
+                            style:
+                            TextStyle(fontSize: 18, color: Colors.white)),
+                        onPressed: () {
+                          handleLogout();
+                        },
                       ),
-                      title: Text(
-                        "Home",
-                        textAlign: TextAlign.right,
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      onTap: () {
-                        // TODO: Handle home button tap
-                      },
-                    ),
-                    ListTile(
-                      trailing: Icon(
-                        Icons.settings,
-                        color: Colors.white,
-                      ),
-                      title: Text(
-                        "Settings",
-                        textAlign: TextAlign.right,
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      onTap: () {
-                        // TODO: Handle settings button tap
-                      },
-                    ),
-                    ListTile(
-                      trailing: Icon(
-                        Icons.logout,
-                        color: Colors.white,
-                      ),
-                      title: Text(
-                        "Logout",
-                        textAlign: TextAlign.right,
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      onTap: () {
-                        handleLogout();
-                      },
                     ),
                   ],
                 ),
@@ -337,6 +324,38 @@ class _SidebarState extends State<Sidebar> {
                   children: [
                     ConstrainedBox(
                       constraints:
+                      BoxConstraints.tightFor(height: 60, width: 280),
+                      child: ElevatedButton(
+                        style: ButtonStyle(
+                          backgroundColor:
+                          MaterialStateProperty.resolveWith((states) {
+                            if (states.contains(MaterialState.pressed)) {
+                              return Color(0xff52799b);
+                            }
+                            return Color(0xff6CA3D1);
+                          }),
+                          shape:
+                          MaterialStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                (6.0),
+                              ),
+                            ),
+                          ),
+                        ),
+                        child: Text('Dashboard',
+                            style:
+                            TextStyle(fontSize: 18, color: Colors.white)),
+                        onPressed: () {
+                          Route route =
+                          MaterialPageRoute(builder: (context) => Dashboard());
+                          Navigator.push(context, route);
+                        },
+                      ),
+                    ),
+                    Divider(),
+                    ConstrainedBox(
+                      constraints:
                           BoxConstraints.tightFor(height: 60, width: 280),
                       child: ElevatedButton(
                         style: ButtonStyle(
@@ -368,38 +387,6 @@ class _SidebarState extends State<Sidebar> {
                               child: const Water(),
                             ),
                           );
-                        },
-                      ),
-                    ),
-                    Divider(),
-                    ConstrainedBox(
-                      constraints:
-                          BoxConstraints.tightFor(height: 60, width: 280),
-                      child: ElevatedButton(
-                        style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.resolveWith((states) {
-                            if (states.contains(MaterialState.pressed)) {
-                              return Color(0xff52799b);
-                            }
-                            return Color(0xff6CA3D1);
-                          }),
-                          shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(
-                                (6.0),
-                              ),
-                            ),
-                          ),
-                        ),
-                        child: Text('Crop Recommendation',
-                            style:
-                                TextStyle(fontSize: 18, color: Colors.white)),
-                        onPressed: () {
-                          Route route =
-                              MaterialPageRoute(builder: (context) => Crops());
-                          Navigator.push(context, route);
                         },
                       ),
                     ),
@@ -466,7 +453,7 @@ class _SidebarState extends State<Sidebar> {
                             PageTransition(
                               curve: Curves.linear,
                               type: PageTransitionType.bottomToTop,
-                              child: MyTable(),
+                              child: SystemOptions(),
                             ),
                           );
                         },
