@@ -101,6 +101,14 @@ class WaterControlPage extends StatefulWidget {
 
 class _WaterControlPageState extends State<WaterControlPage> {
   bool _isTapped = false;
+  bool _isPumpOn = false;
+
+  void createWaterNutrientNode(bool isPumpOn) {
+    final databaseReference = FirebaseDatabase.instance.ref();
+    DatabaseReference waterNutrientRef = databaseReference.child('water_nutrient');
+    DatabaseReference pumpRef = waterNutrientRef.child('pump');
+    pumpRef.set(isPumpOn ? 'ON' : 'OFF');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -136,22 +144,30 @@ class _WaterControlPageState extends State<WaterControlPage> {
                   setState(() {
                     _isTapped = !_isTapped;
                   });
+                  if(!_isTapped) {
+                    _isPumpOn = true; // Replace with your logic to determine the boolean value
+                  }
+                  else{
+                    _isPumpOn = false; // Replace with your logic to determine the boolean value
+                  }
+                  createWaterNutrientNode(_isPumpOn);
                 },
                 child: Container(
-                    width: 200,
-                    height: 200,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: _isTapped ? Colors.red : Colors.green,
-                        width: 4,
-                      ),
+                  width: 200,
+                  height: 200,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: _isTapped ? Colors.red : Colors.green,
+                      width: 4,
                     ),
-                    child: Center(
-                      child: _isTapped
-                          ? const Text("OFF", style: TextStyle(fontSize: 30))
-                          : const Text("ON", style: TextStyle(fontSize: 30)),
-                    )),
+                  ),
+                  child: Center(
+                    child: _isTapped
+                        ? const Text("OFF", style: TextStyle(fontSize: 30))
+                        : const Text("ON", style: TextStyle(fontSize: 30)),
+                  ),
+                ),
               ),
             ],
           ),
@@ -196,7 +212,7 @@ class _NutrientControlPageState extends State<NutrientControlPage> {
                 children: const [
                   Text("NUTRIENT VALVE",
                       style:
-                      TextStyle(fontSize: 30, fontWeight: FontWeight.w700))
+                          TextStyle(fontSize: 30, fontWeight: FontWeight.w700))
                 ],
               ),
               const SizedBox(height: 20),
@@ -315,41 +331,53 @@ class _MyTableState extends State<MyTable> {
           end: Alignment.topRight,
         ),
       ),
-      child: ListTile(
-        leading: Text(
-          reading['reading_id'].toString(),
-          style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
-        ),
-        title: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "Temperature: ${reading['temperature']}\u{00B0}C",
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w400,
-                color: Colors.black54,
-              ),
+      child: Wrap(
+        children: [
+          ListTile(
+            leading: Text(
+              reading['reading_id'].toString(),
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
             ),
-            Text(
-              "Water Temperature: ${double.parse(reading['water'].toStringAsFixed(1))}\u{00B0}C",
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w400,
-                color: Colors.black54,
-              ),
+            title: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Temperature: ${reading['temperature']}\u{00B0}C",
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black54,
+                  ),
+                ),
+                Text(
+                  "Water Temperature: ${double.parse(reading['water'].toStringAsFixed(1))}\u{00B0}C",
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black54,
+                  ),
+                ),
+                Text(
+                  "Humidity: ${reading['humidity']}%",
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black54,
+                  ),
+                ),
+                Text(
+                  "pH: ${double.parse(reading['ph'].toStringAsFixed(2))}",
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black54,
+                  ),
+                ),
+              ],
             ),
-            Text(
-              "Humidity: ${reading['humidity']}%",
-              style: const TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w500,
-                color: Colors.black54,
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

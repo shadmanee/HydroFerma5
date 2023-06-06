@@ -16,6 +16,7 @@ Map<dynamic, dynamic> lastRead = {};
 double temperature = 25.67;
 double humidity = 63.7;
 double water = 27.44;
+double ph = 6.1;
 
 class Dashboard extends StatefulWidget {
   const Dashboard({Key? key}) : super(key: key);
@@ -78,6 +79,11 @@ class _DashboardState extends State<Dashboard> {
           if (lastRead.containsKey('water')) {
             water = lastRead['water'];
             water = double.parse(water.toStringAsFixed(1));
+          }
+
+          if (lastRead.containsKey('ph')) {
+            ph = lastRead['ph'];
+            ph = double.parse(ph.toStringAsFixed(1));
           }
 
           setState(() {});
@@ -522,8 +528,8 @@ class _DashboardState extends State<Dashboard> {
                                       Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.spaceEvenly,
-                                        children: const [
-                                          Text(
+                                        children: [
+                                          const Text(
                                             'pH',
                                             style: TextStyle(
                                               fontSize: 20,
@@ -532,28 +538,7 @@ class _DashboardState extends State<Dashboard> {
                                             ),
                                           ),
                                           Text(
-                                            '6.1',
-                                            style: TextStyle(
-                                              fontSize: 30,
-                                              color: Colors.black54,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: const [
-                                          Text(
-                                            'EC',
-                                            style: TextStyle(
-                                              fontSize: 20,
-                                              fontWeight: FontWeight.w200,
-                                              color: Colors.black54,
-                                            ),
-                                          ),
-                                          Text(
-                                            '2.59',
+                                            '$ph',
                                             style: TextStyle(
                                               fontSize: 30,
                                               color: Colors.black54,

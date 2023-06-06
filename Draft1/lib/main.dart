@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:hydroferma5/home/connected_system.dart';
 import 'package:hydroferma5/home/mobile_dashboard.dart';
 import 'package:hydroferma5/home/notifications.dart';
 import 'package:hydroferma5/lifecycle/lifecycle_cam.dart';
@@ -55,7 +56,7 @@ class AppScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: MediaQuery.of(context).orientation == Orientation.portrait
-          ? MobileLand()
+          ? Dashboard()
           : const TabletScaffold(),
     );
   }
