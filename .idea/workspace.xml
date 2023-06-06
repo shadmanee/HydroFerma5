@@ -5,30 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="98ad68bb-8f7e-4c02-a8f4-d78ef570d040" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Draft1/assets/labels.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Draft1/assets/model_unquant.tflite" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Draft1/lib/lifecycle/camera_screen.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Draft1/lib/lifecycle/image_detail.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Draft1/lib/lifecycle/photo_screen.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Draft1/lib/lifecycle/picture_history.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Lifecycle/check.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Lifecycle/keras_model.h5" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Lifecycle/labels.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Lifecycle/main.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Lifecycle/new_test.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Lifecycle/test.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/Dart_SDK.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/HydroFerma5.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/HydroFerma5.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Draft1/android/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/Draft1/android/app/build.gradle" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Draft1/android/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/Draft1/android/build.gradle" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Draft1/lib/lifecycle/lifecycle_cam.dart" beforeDir="false" afterPath="$PROJECT_DIR$/Draft1/lib/lifecycle/lifecycle_cam.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Draft1/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/Draft1/lib/main.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Draft1/lib/test/test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/Draft1/lib/test/test.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Draft1/linux/flutter/generated_plugin_registrant.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Draft1/linux/flutter/generated_plugin_registrant.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Draft1/linux/flutter/generated_plugin_registrant.h" beforeDir="false" afterPath="$PROJECT_DIR$/Draft1/linux/flutter/generated_plugin_registrant.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Draft1/linux/flutter/generated_plugins.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/Draft1/linux/flutter/generated_plugins.cmake" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Draft1/macos/Flutter/GeneratedPluginRegistrant.swift" beforeDir="false" afterPath="$PROJECT_DIR$/Draft1/macos/Flutter/GeneratedPluginRegistrant.swift" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Draft1/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Draft1/pubspec.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Draft1/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/Draft1/pubspec.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Draft1/windows/flutter/generated_plugin_registrant.cc" beforeDir="false" afterPath="$PROJECT_DIR$/Draft1/windows/flutter/generated_plugin_registrant.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Draft1/windows/flutter/generated_plugin_registrant.h" beforeDir="false" afterPath="$PROJECT_DIR$/Draft1/windows/flutter/generated_plugin_registrant.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Draft1/windows/flutter/generated_plugins.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/Draft1/windows/flutter/generated_plugins.cmake" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -54,17 +41,19 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
-    &quot;last_opened_file_path&quot;: &quot;F:/HydroFerma5/Lifecycle&quot;,
-    &quot;show.migrate.to.gradle.popup&quot;: &quot;false&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "ScreenshotViewer.SavePath": "E:/Study Material/4-1/idpsw",
+    "cidr.known.project.marker": "true",
+    "dart.analysis.tool.window.visible": "false",
+    "last_opened_file_path": "E:/Study Material/4-1/idpsw",
+    "show.migrate.to.gradle.popup": "false"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="F:\HydroFerma5\Lifecycle" />
@@ -83,5 +72,16 @@
       <updated>1677235735099</updated>
     </task>
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>
