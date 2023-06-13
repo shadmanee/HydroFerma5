@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:hydroferma5/home/mobile_dashboard.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hydroferma5/home/notifications.dart';
 import 'package:hydroferma5/lifecycle/lifecycle_cam.dart';
 import 'package:hydroferma5/login+register/login/login.dart';
@@ -12,12 +13,13 @@ import 'package:hydroferma5/water+nutrient/water.dart';
 import 'landing/mobile_land.dart';
 import 'login+register/login&register.dart';
 import 'login+register/register/signup.dart';
-// import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  //await Firebase.initializeApp();
   // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  await Firebase.initializeApp();
   runApp(Hydroferma());
 }
 

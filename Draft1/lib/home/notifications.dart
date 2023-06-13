@@ -1,17 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:hydroferma5/home/user.dart';
 import 'package:page_transition/page_transition.dart';
-
+import 'package:firebase_messaging/firebase_messaging.dart';
 import '../util/sidebar.dart';
 
 class Notifications extends StatefulWidget {
   const Notifications({Key? key}) : super(key: key);
-
   @override
   State<Notifications> createState() => _Notifications();
 }
 
 class _Notifications extends State<Notifications> {
+  @override
+  void initState() {
+    super.initState();
+    retrieveFCMToken();
+  }
+  Future<void> retrieveFCMToken() async {
+    final fcmToken = await FirebaseMessaging.instance.getToken(vapidKey: "BDxrqAyhYK_fu-EQj66mrtnvcV9sOf-2yAangxLQe4xiy5ozbCYuwt7DxCavu3ItgUeSDDMnQ7PJ_6q_ss_xR2k");
+    // Do something with the FCM token
+  }
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   bool _dismissed = false;
 

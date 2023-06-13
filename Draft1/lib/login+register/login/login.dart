@@ -10,6 +10,7 @@ import 'package:hydroferma5/util/text_fields.dart';
 import 'package:page_transition/page_transition.dart';
 import '../../test/test.dart';
 import '../../util/buttons.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -66,6 +67,7 @@ class _LoginPageState extends State<LoginPage> {
         fontSize: 16.0,
       );
     }
+    final fcmToken = await FirebaseMessaging.instance.getToken(vapidKey: "BDxrqAyhYK_fu-EQj66mrtnvcV9sOf-2yAangxLQe4xiy5ozbCYuwt7DxCavu3ItgUeSDDMnQ7PJ_6q_ss_xR2k");
   }
 
   @override

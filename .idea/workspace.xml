@@ -8,7 +8,15 @@
     <list default="true" id="98ad68bb-8f7e-4c02-a8f4-d78ef570d040" name="Changes" comment="" />
 =======
     <list default="true" id="98ad68bb-8f7e-4c02-a8f4-d78ef570d040" name="Changes" comment="">
+<<<<<<< Updated upstream
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+=======
+      <change beforePath="$PROJECT_DIR$/.idea/HydroFerma5.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/HydroFerma5.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Draft1/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Draft1/pubspec.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Draft1/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/Draft1/pubspec.yaml" afterDir="false" />
+>>>>>>> Stashed changes
     </list>
 >>>>>>> Stashed changes
     <option name="SHOW_DIALOG" value="false" />
