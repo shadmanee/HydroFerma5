@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:hydroferma5/home/mobile_dashboard.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:hydroferma5/home/noti.dart';
 import 'package:hydroferma5/home/notifications.dart';
 import 'package:hydroferma5/lifecycle/lifecycle_cam.dart';
 import 'package:hydroferma5/login+register/login/login.dart';
@@ -14,25 +15,36 @@ import 'landing/mobile_land.dart';
 import 'login+register/login&register.dart';
 import 'login+register/register/signup.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:app_settings/app_settings.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  //await Firebase.initializeApp();
-  // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   await Firebase.initializeApp();
+  // NotificationServices notificationServices = NotificationServices();
+  // notificationServices.getDeviceToken();
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   runApp(Hydroferma());
 }
 
-// Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-//   await Firebase.initializeApp();
-//   print('Handling a background message ${message.messageId}');
-// }
 
+@pragma('vm:entry-point')
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message)async{
+  await Firebase.initializeApp();
+  print(message.notification!.title.toString());
+}
 class Hydroferma extends StatelessWidget {
-  const Hydroferma({Key? key}) : super(key: key);
+  //const Hydroferma({Key? key}) : super(key: key);
+  final NotificationServices notificationServices = NotificationServices();
 
   @override
   Widget build(BuildContext context) {
+    // Call the methods to request permission and retrieve device token
+    notificationServices.requestNotificationPermission();
+    notificationServices.firebaseInit();
+    notificationServices.getDeviceToken().then((value){
+      print('device token');
+      print(value);
+    });
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       // home: ResponsiveLayout(

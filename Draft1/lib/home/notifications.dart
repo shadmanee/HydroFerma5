@@ -3,6 +3,36 @@ import 'package:hydroferma5/home/user.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import '../util/sidebar.dart';
+import 'package:app_settings/app_settings.dart';
+
+// class NotificationServices{
+//   FirebaseMessaging messaging = FirebaseMessaging.instance ;
+//   void requestNotificationPermission()async{
+//     NotificationSettings settings = await messaging.requestPermission(
+//       alert: true,
+//       badge: true,
+//       carPlay: true,
+//       criticalAlert: true,
+//       provisional: true,
+//       sound: true
+//     );
+//
+//     if(settings.authorizationStatus == AuthorizationStatus.authorized){
+//       print('user granted permission');
+//     }
+//     else if(settings.authorizationStatus == AuthorizationStatus.provisional){
+//       print('user granted provisional permission');
+//     }
+//     else{
+//         print('user denied permission');
+//       }
+//
+//   }
+//   Future<String> getDeviceToken()async{
+//     String? token = await messaging.getToken();
+//     return token!;
+//   }
+// }
 
 class Notifications extends StatefulWidget {
   const Notifications({Key? key}) : super(key: key);
@@ -14,12 +44,8 @@ class _Notifications extends State<Notifications> {
   @override
   void initState() {
     super.initState();
-    retrieveFCMToken();
   }
-  Future<void> retrieveFCMToken() async {
-    final fcmToken = await FirebaseMessaging.instance.getToken(vapidKey: "BDxrqAyhYK_fu-EQj66mrtnvcV9sOf-2yAangxLQe4xiy5ozbCYuwt7DxCavu3ItgUeSDDMnQ7PJ_6q_ss_xR2k");
-    // Do something with the FCM token
-  }
+
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   bool _dismissed = false;
 
