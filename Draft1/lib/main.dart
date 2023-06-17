@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hydroferma5/home/mobile_dashboard.dart';
 import 'package:hydroferma5/home/message_screen.dart';
@@ -17,7 +18,7 @@ import 'login+register/login&register.dart';
 import 'login+register/register/signup.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:app_settings/app_settings.dart';
-
+import 'package:http/http.dart' as http;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -43,9 +44,12 @@ class Hydroferma extends StatelessWidget {
     notificationServices.requestNotificationPermission();
     notificationServices.firebaseInit(context);
     notificationServices.setupInteractMessage(context);
+    notificationServices.isTokenRefresh();
     notificationServices.getDeviceToken().then((value){
-      print('device token');
-      print(value);
+      if (kDebugMode) {
+        print('device token');
+        print(value);
+      }
     });
     return MaterialApp(
       debugShowCheckedModeBanner: false,

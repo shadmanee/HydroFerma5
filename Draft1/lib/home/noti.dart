@@ -8,8 +8,18 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import '../util/sidebar.dart';
 import 'package:app_settings/app_settings.dart';
 import 'package:meta/meta.dart';
-
+import 'package:intl/intl.dart';
 import 'message_screen.dart';
+
+class NotificationMessages {
+  String msgtitle = '';
+  String msgbody = '';
+  String msgtype = '';
+  String msgid = '';
+  DateTime time = DateTime.now();
+}
+
+List<NotificationMessages> msgList = [];
 
 class NotificationServices{
   FirebaseMessaging messaging = FirebaseMessaging.instance ;
@@ -38,7 +48,7 @@ class NotificationServices{
 
   }
 
-  void initLocalNotifications(BuildContext context, RemoteMessage message)async{
+  Future<void>  initLocalNotifications(BuildContext context, RemoteMessage message)async{
     var androidInitializationSettings = const AndroidInitializationSettings('@mipmap/ic_launcher');
 
     var initializationSetting = InitializationSettings(
@@ -47,7 +57,6 @@ class NotificationServices{
 
     await _flutterLocalNotificationsPlugin.initialize(
         initializationSetting,
-      //onDidReceiveNotificationResponse: (payload) {
       onSelectNotification: (String? payload) async {
         // Handle notification selection
         handleMessage(context, message);
@@ -57,7 +66,17 @@ class NotificationServices{
 
   void firebaseInit(BuildContext context){
     FirebaseMessaging.onMessage.listen((message) {
+      NotificationMessages newmsg = NotificationMessages();
       if (kDebugMode) {
+        newmsg.msgtitle = message.notification!.title.toString();
+        newmsg.msgbody = message.notification!.body.toString();
+        newmsg.msgtype = message.data['type'];
+        newmsg.msgid = message.data['id'];
+        newmsg.time = DateTime.now();
+        // DateFormat formatter = DateFormat('yyyy-MM-dd HH:mm:ss');
+        // String formattedTime = formatter.format(newmsg.time);
+        // newmsg.time = formattedTime as DateTime;
+        msgList.add(newmsg);
         print(message.notification!.title.toString());
         print(message.notification!.body.toString());
         print(message.data.toString()); ////
@@ -126,10 +145,10 @@ class NotificationServices{
   void handleMessage(BuildContext context, RemoteMessage message){
     if(message.data['type'] == 'msg'){
       Navigator.push(context,
+          // NotificationMessages
           MaterialPageRoute(builder: (context) => MessageScreen(
-            id: message.data['id'],
+            messages: msgList,
           )));
     }
   }
 }
-
