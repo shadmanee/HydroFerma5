@@ -91,6 +91,7 @@ class _DashboardState extends State<Dashboard> {
     return Scaffold(
       key: _scaffoldKey,
       // backgroundColor: Colors.white,
+
       drawer: SidebarForHome(),
       body: SafeArea(
         child: SlidingUpPanel(

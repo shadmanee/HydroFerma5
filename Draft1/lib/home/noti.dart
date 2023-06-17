@@ -9,6 +9,8 @@ import '../util/sidebar.dart';
 import 'package:app_settings/app_settings.dart';
 import 'package:meta/meta.dart';
 
+import 'message_screen.dart';
+
 class NotificationServices{
   FirebaseMessaging messaging = FirebaseMessaging.instance ;
   final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
@@ -35,27 +37,34 @@ class NotificationServices{
     }
 
   }
+
   void initLocalNotifications(BuildContext context, RemoteMessage message)async{
     var androidInitializationSettings = const AndroidInitializationSettings('@mipmap/ic_launcher');
+
     var initializationSetting = InitializationSettings(
         android: androidInitializationSettings
     );
 
     await _flutterLocalNotificationsPlugin.initialize(
         initializationSetting,
-        // onDidReceiveNotificationResponse: (payload){
-        //
-        // }
+      //onDidReceiveNotificationResponse: (payload) {
+      onSelectNotification: (String? payload) async {
+        // Handle notification selection
+        handleMessage(context, message);
+      },
     );
   }
 
-  void firebaseInit(){
+  void firebaseInit(BuildContext context){
     FirebaseMessaging.onMessage.listen((message) {
       if (kDebugMode) {
         print(message.notification!.title.toString());
         print(message.notification!.body.toString());
-        showNotification(message);
+        print(message.data.toString()); ////
+        print(message.data['type']);////
+        print(message.data['id']);////
       }
+      initLocalNotifications(context , message);////
       showNotification(message);
     });
   }
@@ -89,9 +98,6 @@ class NotificationServices{
     }
 
 
-
-
-
   Future<String> getDeviceToken()async{
     String? token = await messaging.getToken();
     return token!;
@@ -103,4 +109,27 @@ class NotificationServices{
       print('refresh');
     });
   }
+
+  Future<void> setupInteractMessage(BuildContext context)async{
+    //when app is terminated
+    RemoteMessage? initialMessage = await FirebaseMessaging.instance.getInitialMessage();
+
+    if(initialMessage != null){
+      handleMessage(context, initialMessage);
+    }
+    //when app is inbg
+    FirebaseMessaging.onMessageOpenedApp.listen((event) {
+      handleMessage(context, event);
+    });
+  }
+
+  void handleMessage(BuildContext context, RemoteMessage message){
+    if(message.data['type'] == 'msg'){
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => MessageScreen(
+            id: message.data['id'],
+          )));
+    }
+  }
 }
+

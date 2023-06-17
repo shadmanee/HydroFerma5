@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:hydroferma5/home/mobile_dashboard.dart';
+import 'package:hydroferma5/home/message_screen.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hydroferma5/home/noti.dart';
 import 'package:hydroferma5/home/notifications.dart';
@@ -20,8 +21,6 @@ import 'package:app_settings/app_settings.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  // NotificationServices notificationServices = NotificationServices();
-  // notificationServices.getDeviceToken();
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   runApp(Hydroferma());
 }
@@ -31,6 +30,8 @@ Future<void> main() async {
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message)async{
   await Firebase.initializeApp();
   print(message.notification!.title.toString());
+  print(message.notification!.body.toString());
+  print(message.data.toString());
 }
 class Hydroferma extends StatelessWidget {
   //const Hydroferma({Key? key}) : super(key: key);
@@ -40,7 +41,8 @@ class Hydroferma extends StatelessWidget {
   Widget build(BuildContext context) {
     // Call the methods to request permission and retrieve device token
     notificationServices.requestNotificationPermission();
-    notificationServices.firebaseInit();
+    notificationServices.firebaseInit(context);
+    notificationServices.setupInteractMessage(context);
     notificationServices.getDeviceToken().then((value){
       print('device token');
       print(value);
