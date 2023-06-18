@@ -10,7 +10,8 @@ import 'package:hydroferma5/util/text_fields.dart';
 import 'package:page_transition/page_transition.dart';
 import '../../test/test.dart';
 import '../../util/buttons.dart';
-
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:hydroferma5/home/message_screen.dart';
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
 
@@ -33,6 +34,42 @@ class _LoginPageState extends State<LoginPage> {
 
   late UserCredential user;
 
+  // Future<void> _signIn() async {
+  //   try {
+  //     // Call the signInWithEmailAndPassword method with the user's email and password
+  //     user = await FirebaseAuth.instance.signInWithEmailAndPassword(
+  //         email: _emailTextController.text,
+  //         password: _passwordTextController.text);
+  //     // Navigate to the home screen if the sign-in is successful
+  //     Navigator.push(
+  //         context, MaterialPageRoute(builder: (context) => Dashboard()));
+  //   } on FirebaseAuthException catch (e) {
+  //   } on FirebaseAuthException catch (e) {
+  //     // Show a toast message with the error message
+  //     switch (e.code) {
+  //       case 'wrong-password':
+  //         error_text = 'Wrong password';
+  //         break;
+  //       case 'invalid-email':
+  //         error_text = 'Invalid e-mail';
+  //         break;
+  //       case 'user-not-found':
+  //         error_text = 'User Not Found';
+  //         break;
+  //     }
+  //     Fluttertoast.showToast(
+  //       msg: error_text,
+  //       toastLength: Toast.LENGTH_SHORT,
+  //       gravity: ToastGravity.BOTTOM,
+  //       timeInSecForIosWeb: 1,
+  //       backgroundColor: Colors.red,
+  //       textColor: Colors.white,
+  //       fontSize: 16.0,
+  //     );
+  //   }
+  //   final fcmToken = await FirebaseMessaging.instance.getToken(vapidKey: "BDxrqAyhYK_fu-EQj66mrtnvcV9sOf-2yAangxLQe4xiy5ozbCYuwt7DxCavu3ItgUeSDDMnQ7PJ_6q_ss_xR2k");
+  // }
+
   Future<void> _signIn() async {
     try {
       // Call the signInWithEmailAndPassword method with the user's email and password
@@ -43,29 +80,8 @@ class _LoginPageState extends State<LoginPage> {
       Navigator.push(
           context, MaterialPageRoute(builder: (context) => Dashboard()));
     } on FirebaseAuthException catch (e) {
-    } on FirebaseAuthException catch (e) {
-      // Show a toast message with the error message
-      switch (e.code) {
-        case 'wrong-password':
-          error_text = 'Wrong password';
-          break;
-        case 'invalid-email':
-          error_text = 'Invalid e-mail';
-          break;
-        case 'user-not-found':
-          error_text = 'User Not Found';
-          break;
-      }
-      Fluttertoast.showToast(
-        msg: error_text,
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: 1,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-        fontSize: 16.0,
-      );
     }
+    final fcmToken = await FirebaseMessaging.instance.getToken(vapidKey: "BDxrqAyhYK_fu-EQj66mrtnvcV9sOf-2yAangxLQe4xiy5ozbCYuwt7DxCavu3ItgUeSDDMnQ7PJ_6q_ss_xR2k");
   }
 
   @override

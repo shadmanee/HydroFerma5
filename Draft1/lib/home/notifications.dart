@@ -1,17 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:hydroferma5/home/user.dart';
 import 'package:page_transition/page_transition.dart';
-
+import 'package:firebase_messaging/firebase_messaging.dart';
 import '../util/sidebar.dart';
+import 'package:app_settings/app_settings.dart';
+
+
 
 class Notifications extends StatefulWidget {
   const Notifications({Key? key}) : super(key: key);
-
   @override
   State<Notifications> createState() => _Notifications();
 }
 
 class _Notifications extends State<Notifications> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   bool _dismissed = false;
 

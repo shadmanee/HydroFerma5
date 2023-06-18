@@ -1,4 +1,5 @@
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get.dart';
@@ -10,8 +11,9 @@ import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 import '../util/sidebar.dart';
 import '../water+nutrient/water.dart';
+import 'noti.dart';
 import 'notifications.dart';
-
+import 'message_screen.dart';
 Map<dynamic, dynamic> lastRead = {};
 double temperature = 25.67;
 double humidity = 63.7;
@@ -42,7 +44,25 @@ class _DashboardState extends State<Dashboard> {
         return 'Information about crop recommendation using sensor data.';
     }
   }
+  NotificationServices notificationServices = NotificationServices();
 
+// Call the initLocalNotifications method with a RemoteMessage object
+  void initializeNotifications(BuildContext context) async {
+    // RemoteMessage message = RemoteMessage(
+    //   // Populate the RemoteMessage object with the necessary information
+    //   // from the received FCM message
+    //   data: {
+    //     'type': 'msg',
+    //     'id': '123456789',
+    //   },
+    //   notification: RemoteNotification(
+    //     title: 'Notification Title',
+    //     body: 'Notification Body',
+    //   ),
+    // );
+
+    // Call the initLocalNotifications method
+  }
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
@@ -97,6 +117,7 @@ class _DashboardState extends State<Dashboard> {
     return Scaffold(
       key: _scaffoldKey,
       // backgroundColor: Colors.white,
+
       drawer: SidebarForHome(),
       body: SafeArea(
         child: SlidingUpPanel(
@@ -240,14 +261,19 @@ class _DashboardState extends State<Dashboard> {
                           icon: const Icon(Icons.notifications_none),
                           iconSize: 35,
                           onPressed: () {
-                            Navigator.push(
-                              context,
-                              PageTransition(
-                                curve: Curves.linear,
-                                type: PageTransitionType.bottomToTop,
-                                child: const Notifications(),
+                            RemoteMessage message = RemoteMessage(
+                              data: {
+                                'type': 'msg',
+                                'id': '12345678',
+                                'title': 'Notification Title',
+                                'body': 'Notification Body',
+                              },
+                              notification: RemoteNotification(
+
                               ),
                             );
+                            notificationServices.handleMessage(context, message);
+
                           },
                         ),
                         Positioned(
