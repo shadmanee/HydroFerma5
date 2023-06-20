@@ -72,6 +72,8 @@ dependencies:
   url_launcher: ^6.1.10
   flutter_image_compress: ^2.0.0
   flutter_local_notifications: ^9.0.0
+  shimmer_animation: ^2.1.0+1
+  flutter_svg: ^1.1.6
 
 dev_dependencies:
   flutter_test:
