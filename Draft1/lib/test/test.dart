@@ -1,84 +1,67 @@
-import 'package:firebase_database/firebase_database.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
-Map<dynamic, dynamic> lastRead = {};
-String temperature = '';
-String humidity = '';
+class FiChartPage extends StatefulWidget {
+  const FiChartPage({Key? key}) : super(key: key);
 
-class SensorDataPage extends StatefulWidget {
   @override
-  _SensorDataPageState createState() => _SensorDataPageState();
+  _FiChartPageState createState() => _FiChartPageState();
 }
 
-class _SensorDataPageState extends State<SensorDataPage> {
-  late DatabaseReference dbRef;
-
-  @override
-  void initState() {
-    super.initState();
-    setupSensorDataListener();
-  }
-
-  void setupSensorDataListener() {
-    print('IN FUNCTION');
-    dbRef = FirebaseDatabase.instance.ref().child('/sensor_data/');
-    dbRef.onValue.listen((DatabaseEvent event) {
-      print("Read DBREF");
-      DataSnapshot snap = event.snapshot;
-      print('Snapshot value: ${snap.value}');
-
-      if (snap.value != null) {
-        List<dynamic> readings = snap.value as List<dynamic>;
-
-        if (readings.isNotEmpty) {
-          Map<dynamic, dynamic> lastReading =
-              readings.last as Map<dynamic, dynamic>;
-          lastRead = lastReading;
-
-          if (lastRead.containsKey('temperature')) {
-            temperature = lastRead['temperature'].toString();
-          } else {
-            temperature = '';
-          }
-
-          if (lastRead.containsKey('humidity')) {
-            humidity = lastRead['humidity'].toString();
-          } else {
-            humidity = '';
-          }
-
-          setState(() {});
-        }
-      }
-    }, onError: (Object error) {
-      print('NOT READING BECAUSE $error');
-    });
-  }
-
-  // @override
-  // void dispose() {
-  //   dbRef.onValue.cancel();
-  //   super.dispose();
-  // }
+class _FiChartPageState extends State<FiChartPage> {
+  List<Color> gradientColors = [
+    const Color(0xff23b6e6),
+    const Color(0xff02d39a),
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.blueGrey[900],
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'Temperature: $temperature',
-              style: const TextStyle(fontSize: 24),
+        child: LineChart(LineChartData(
+            borderData: FlBorderData(
+                show: true,
+                border: Border.all(color: Colors.white, width: 2)),
+            gridData: FlGridData(
+              show: true,
+              getDrawingHorizontalLine: (value) {
+                return FlLine(color: Colors.white, strokeWidth: 1);
+              },
+              drawVerticalLine: true,
+              getDrawingVerticalLine: (value) {
+                return FlLine(color: Colors.white, strokeWidth: 1);
+              },
             ),
-            const SizedBox(height: 20),
-            Text(
-              'Humidity: $humidity',
-              style: const TextStyle(fontSize: 24),
+            titlesData: FlTitlesData(
+              show: true,
             ),
-          ],
-        ),
+            maxX: 8,
+            maxY: 8,
+            minY: 0,
+            minX: 0,
+            lineBarsData: [
+              LineChartBarData(
+                  spots: [
+                    const FlSpot(0, 0),
+                    const FlSpot(5, 5),
+                    const FlSpot(7, 6),
+                    const FlSpot(8, 4),
+                  ],
+                  isCurved: true,
+                  gradient: const LinearGradient(colors: [
+                    Colors.black12,
+                    Colors.white70,
+                    Colors.white
+                  ]),
+                  barWidth: 5,
+                  belowBarData: BarAreaData(
+                      show: true,
+                      gradient: LinearGradient(
+                          colors: gradientColors
+                              .map((e) => e.withOpacity(0.3))
+                              .toList())))
+            ])),
       ),
     );
   }

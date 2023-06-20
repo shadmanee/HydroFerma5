@@ -7,6 +7,7 @@ import 'package:hydroferma5/croprecommendation/search.dart';
 import 'package:hydroferma5/home/user.dart';
 import 'package:hydroferma5/lifecycle/lifecycle_cam.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:shimmer_animation/shimmer_animation.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
 import '../util/sidebar.dart';
@@ -14,10 +15,12 @@ import '../water+nutrient/water.dart';
 import 'noti.dart';
 import 'notifications.dart';
 import 'message_screen.dart';
+
 Map<dynamic, dynamic> lastRead = {};
 double temperature = 25.67;
 double humidity = 63.7;
 double water = 27.44;
+double ph = 6.1;
 
 class Dashboard extends StatefulWidget {
   const Dashboard({Key? key}) : super(key: key);
@@ -30,8 +33,9 @@ class _DashboardState extends State<Dashboard> {
   var notificationCount = 3; // TODO: Replace with actual notification count
   final pc = PanelController();
   String selectedModule = 'Water Supply';
-  bool water_pump = false;
-  bool nutrient_valve = true;
+  bool nutrientValve = true;
+  bool waterChange = true;
+  bool locChange = false;
 
   String panelContent(String module) {
     switch (module) {
@@ -43,6 +47,7 @@ class _DashboardState extends State<Dashboard> {
         return 'Information about crop recommendation using sensor data.';
     }
   }
+
   NotificationServices notificationServices = NotificationServices();
 
 // Call the initLocalNotifications method with a RemoteMessage object
@@ -62,12 +67,14 @@ class _DashboardState extends State<Dashboard> {
 
     // Call the initLocalNotifications method
   }
+
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
     setupSensorDataListener();
+    setupValveStatusListener();
   }
 
   void setupSensorDataListener() async {
@@ -100,10 +107,26 @@ class _DashboardState extends State<Dashboard> {
             water = double.parse(water.toStringAsFixed(1));
           }
 
+          if (lastRead.containsKey('ph')) {
+            ph = lastRead['ph'];
+            ph = double.parse(ph.toStringAsFixed(1));
+          }
+
           setState(() {});
         }
       }
     });
+  }
+
+  void setupValveStatusListener() async {
+    final DatabaseReference databaseRef = FirebaseDatabase.instance.ref();
+    print("DBREF1");
+    DataSnapshot dataSnapshot = (await databaseRef
+        .child('water_nutrient')
+        .child('valve')
+        .once()) as DataSnapshot;
+    String valveValue = dataSnapshot.value as String;
+    print('Valve value: $valveValue');
   }
 
   @override
@@ -112,7 +135,7 @@ class _DashboardState extends State<Dashboard> {
       key: _scaffoldKey,
       // backgroundColor: Colors.white,
 
-      drawer: SidebarForHome(),
+      drawer: const SidebarForHome(),
       body: SafeArea(
         child: SlidingUpPanel(
           controller: pc,
@@ -238,7 +261,7 @@ class _DashboardState extends State<Dashboard> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Padding(
-                padding: EdgeInsets.only(left: 10, right: 10, top: 10),
+                padding: const EdgeInsets.only(left: 10, right: 10, top: 10),
                 child: Row(
                   children: [
                     IconButton(
@@ -255,19 +278,17 @@ class _DashboardState extends State<Dashboard> {
                           icon: const Icon(Icons.notifications_none),
                           iconSize: 35,
                           onPressed: () {
-                            RemoteMessage message = RemoteMessage(
+                            RemoteMessage message = const RemoteMessage(
                               data: {
                                 'type': 'msg',
                                 'id': '12345678',
                                 'title': 'Notification Title',
                                 'body': 'Notification Body',
                               },
-                              notification: RemoteNotification(
-
-                              ),
+                              notification: RemoteNotification(),
                             );
-                            notificationServices.handleMessage(context, message);
-
+                            notificationServices.handleMessage(
+                                context, message);
                           },
                         ),
                         Positioned(
@@ -305,7 +326,7 @@ class _DashboardState extends State<Dashboard> {
                           PageTransition(
                             curve: Curves.linear,
                             type: PageTransitionType.bottomToTop,
-                            child: UserInfo(),
+                            child: const UserInfo(),
                           ),
                         );
                       },
@@ -316,328 +337,203 @@ class _DashboardState extends State<Dashboard> {
               Expanded(
                 child: ListView(
                   children: [
-                    const SizedBox(height: 50),
+                    const SizedBox(height: 0),
                     Container(
                       margin: const EdgeInsets.symmetric(
                           horizontal: 20, vertical: 20),
                       child: StaggeredGrid.count(
                         crossAxisCount: 2,
-                        mainAxisSpacing: 16,
-                        crossAxisSpacing: 16,
+                        mainAxisSpacing: 20,
+                        crossAxisSpacing: 20,
                         children: [
                           StaggeredGridTile.count(
                             crossAxisCellCount: 1,
-                            mainAxisCellCount: 1.75,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(30),
-                                color: const Color(0xffb1e2f3),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey.withOpacity(0.5),
-                                    spreadRadius: 2,
-                                    blurRadius: 5,
-                                    offset: const Offset(0, 3),
-                                  ),
-                                ],
-                              ),
-                              child: Expanded(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const Text(
-                                      '3h',
-                                      style: TextStyle(
-                                          fontSize: 50,
-                                          fontWeight: FontWeight.w200,
-                                          color: Colors.black54),
-                                    ),
-                                    const Text(
-                                      '9m',
-                                      style: TextStyle(
-                                          fontSize: 50,
-                                          fontWeight: FontWeight.w200,
-                                          color: Colors.black54),
-                                    ),
-                                    const SizedBox(height: 5),
-                                    const Text(
-                                      'Since Last',
-                                      style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w300,
-                                          color: Colors.black45),
-                                    ),
-                                    const SizedBox(height: 5),
-                                    const Text(
-                                      'Water Change',
-                                      style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w300,
-                                          color: Colors.black45),
-                                    ),
-                                    const SizedBox(
-                                      height: 10,
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        const Text(
-                                          'Water Pump',
-                                          style: TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.w400,
-                                              color: Colors.black45),
-                                        ),
-                                        const SizedBox(
-                                          width: 5,
-                                        ),
-                                        water_pump
-                                            ? const Text(
-                                                'ON',
-                                                style: TextStyle(
-                                                    fontSize: 18,
-                                                    fontWeight: FontWeight.w400,
-                                                    color: Colors.green),
-                                              )
-                                            : const Text(
-                                                'OFF',
-                                                style: TextStyle(
-                                                    fontSize: 18,
-                                                    fontWeight: FontWeight.w400,
-                                                    color: Colors.red),
-                                              ),
-                                      ],
-                                    )
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                          StaggeredGridTile.count(
-                            crossAxisCellCount: 1,
-                            mainAxisCellCount: 1,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(30),
-                                color: const Color(0xffb1e3d8),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey.withOpacity(0.5),
-                                    spreadRadius: 2,
-                                    blurRadius: 5,
-                                    offset: const Offset(0, 3),
-                                  ),
-                                ],
-                              ),
-                              child: Expanded(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        const Icon(
-                                          Icons.thermostat,
-                                          size: 40,
-                                          color: Colors.black54,
-                                        ),
-                                        Text(
-                                          '$temperature\u00B0C',
-                                          style: TextStyle(
-                                            fontSize: 25,
-                                            fontWeight: FontWeight.w300,
-                                            color: (temperature >=
-                                                        20) &
-                                                    (temperature <=
-                                                        25)
-                                                ? Colors.black54
-                                                : Colors.red,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(
-                                      height: 15,
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            const Padding(
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal: 3),
-                                              child: Icon(
-                                                Icons.heat_pump_outlined,
-                                                size: 15,
-                                                color: Colors.black54,
-                                              ),
-                                            ),
-                                            Text(
-                                              '$humidity%',
-                                              style: TextStyle(
-                                                  fontSize: 15,
-                                                  fontWeight: FontWeight.w300,
-                                                  color: (40 <=
-                                                              humidity) &
-                                                          (65 >=
-                                                              humidity)
-                                                      ? Colors.black54
-                                                      : Colors.red),
-                                            ),
-                                          ],
-                                        ),
-                                        Row(
-                                          children: [
-                                            const Padding(
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal: 3),
-                                              child: Icon(
-                                                Icons.water_drop_outlined,
-                                                size: 15,
-                                                color: Colors.black54,
-                                              ),
-                                            ),
-                                            Text(
-                                              '$water\u00B0C',
-                                              style: TextStyle(
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.w300,
-                                                color: (water >=
-                                                            16) &
-                                                        (water <=
-                                                            20)
-                                                    ? Colors.black54
-                                                    : Colors.red,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ],
+                            mainAxisCellCount: 1.5,
+                            child: Shimmer(
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(30),
+                                  color: const Color(0xffb1e2f3),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(0.5),
+                                      spreadRadius: 2,
+                                      blurRadius: 5,
+                                      offset: const Offset(0, 3),
                                     ),
                                   ],
                                 ),
-                              ),
-                            ),
-                          ),
-                          StaggeredGridTile.count(
-                            crossAxisCellCount: 1,
-                            mainAxisCellCount: 1.75,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(30),
-                                color: const Color(0xffb1e2f3),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey.withOpacity(0.5),
-                                    spreadRadius: 2,
-                                    blurRadius: 5,
-                                    offset: const Offset(0, 3),
-                                  ),
-                                ],
-                              ),
-                              child: Expanded(
                                 child: Padding(
-                                  padding: const EdgeInsets.all(12.0),
+                                  padding: const EdgeInsets.only(left: 15.0),
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Row(
                                         mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: const [
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          const Icon(
+                                            Icons.thermostat,
+                                            size: 32,
+                                            color: Colors.black54,
+                                          ),
+                                          const SizedBox(
+                                            width: 10,
+                                          ),
                                           Text(
-                                            'pH',
+                                            '$temperature\u00B0C',
                                             style: TextStyle(
                                               fontSize: 20,
-                                              fontWeight: FontWeight.w200,
-                                              color: Colors.black54,
-                                            ),
-                                          ),
-                                          Text(
-                                            '6.1',
-                                            style: TextStyle(
-                                              fontSize: 30,
-                                              color: Colors.black54,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: const [
-                                          Text(
-                                            'EC',
-                                            style: TextStyle(
-                                              fontSize: 20,
-                                              fontWeight: FontWeight.w200,
-                                              color: Colors.black54,
-                                            ),
-                                          ),
-                                          Text(
-                                            '2.59',
-                                            style: TextStyle(
-                                              fontSize: 30,
-                                              color: Colors.black54,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: const [
-                                          Text(
-                                            'TDS',
-                                            style: TextStyle(
-                                              fontSize: 20,
-                                              fontWeight: FontWeight.w200,
-                                              color: Colors.black54,
-                                            ),
-                                          ),
-                                          Text(
-                                            '2200',
-                                            style: TextStyle(
-                                              fontSize: 30,
-                                              color: Colors.black54,
+                                              fontWeight: FontWeight.w300,
+                                              color: (temperature >= 20) &
+                                                      (temperature <= 25)
+                                                  ? Colors.black54
+                                                  : Colors.red,
                                             ),
                                           ),
                                         ],
                                       ),
                                       const SizedBox(
-                                        height: 10,
+                                        height: 15,
                                       ),
                                       Row(
                                         mainAxisAlignment:
-                                            MainAxisAlignment.center,
+                                            MainAxisAlignment.start,
                                         children: [
-                                          const Text(
-                                            'Nutrient',
+                                          const Icon(
+                                            Icons.heat_pump_outlined,
+                                            size: 32,
+                                            color: Colors.black54,
+                                          ),
+                                          const SizedBox(
+                                            width: 10,
+                                          ),
+                                          Text(
+                                            '$humidity%',
+                                            style: TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.w300,
+                                                color: (40 <= humidity) &
+                                                        (65 >= humidity)
+                                                    ? Colors.black54
+                                                    : Colors.red),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(
+                                        height: 15,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          const Icon(
+                                            Icons.water_drop_outlined,
+                                            size: 32,
+                                            color: Colors.black54,
+                                          ),
+                                          const SizedBox(
+                                            width: 10,
+                                          ),
+                                          Text(
+                                            '$water\u00B0C',
+                                            style: TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.w300,
+                                              color: (water >= 16) & (water <= 20)
+                                                  ? Colors.black54
+                                                  : Colors.red,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(
+                                        height: 15,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                        MainAxisAlignment.start,
+                                        children: [
+                                          const Icon(
+                                            Icons.multiline_chart,
+                                            size: 32,
+                                            color: Colors.black54,
+                                          ),
+                                          const SizedBox(
+                                            width: 10,
+                                          ),
+                                          Text(
+                                            '$ph',
+                                            style: TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.w300,
+                                              color: (water >= 16) & (water <= 20)
+                                                  ? Colors.black54
+                                                  : Colors.red,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          StaggeredGridTile.count(
+                            crossAxisCellCount: 1,
+                            mainAxisCellCount: 0.8,
+                            child: Shimmer(
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(30),
+                                  color: const Color(0xffb1e3d8),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(0.5),
+                                      spreadRadius: 2,
+                                      blurRadius: 5,
+                                      offset: const Offset(0, 3),
+                                    ),
+                                  ],
+                                ),
+                                child: Expanded(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: const [
+                                          Text(
+                                            'Nutrient Supply',
                                             style: TextStyle(
                                                 fontSize: 18,
                                                 fontWeight: FontWeight.w400,
                                                 color: Colors.black45),
                                           ),
-                                          const SizedBox(width: 5),
-                                          nutrient_valve
+                                        ],
+                                      ),
+                                      const SizedBox(
+                                        height: 15,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          nutrientValve
                                               ? const Text(
                                                   'ON',
                                                   style: TextStyle(
-                                                      fontSize: 18,
-                                                      fontWeight:
-                                                          FontWeight.w400,
+                                                      fontSize: 24,
+                                                      fontWeight: FontWeight.w400,
                                                       color: Colors.green),
                                                 )
                                               : const Text(
                                                   'OFF',
                                                   style: TextStyle(
-                                                      fontSize: 18,
-                                                      fontWeight:
-                                                          FontWeight.w400,
+                                                      fontSize: 30,
+                                                      fontWeight: FontWeight.w400,
                                                       color: Colors.red),
                                                 ),
                                         ],
@@ -650,55 +546,164 @@ class _DashboardState extends State<Dashboard> {
                           ),
                           StaggeredGridTile.count(
                             crossAxisCellCount: 1,
-                            mainAxisCellCount: 1,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(30),
-                                color: Color(0xffb1e3d8),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey.withOpacity(0.5),
-                                    spreadRadius: 2,
-                                    blurRadius: 5,
-                                    offset: Offset(0, 3),
-                                  ),
-                                ],
-                              ),
-                              child: Expanded(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const Text(
-                                      'Plants',
-                                      style: TextStyle(
-                                          fontSize: 24,
-                                          fontWeight: FontWeight.w500,
-                                          color: Colors.black54),
-                                    ),
-                                    const SizedBox(height: 5),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: const [
-                                        Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: 3),
-                                          child: Icon(
-                                            Icons.grass_outlined,
-                                            color: Color(0xff44b230),
-                                            size: 16,
-                                          ),
-                                        ),
-                                        Text(
-                                          'Lettuce',
-                                          style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w300,
-                                              color: Colors.black45),
-                                        ),
-                                      ],
+                            mainAxisCellCount: 1.5,
+                            child: Shimmer(
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(30),
+                                  color: const Color(0xffb1e2f3),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(0.5),
+                                      spreadRadius: 2,
+                                      blurRadius: 5,
+                                      offset: const Offset(0, 3),
                                     ),
                                   ],
+                                ),
+                                child: Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(12.0),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                          children: const [
+                                            Text(
+                                              'Water Change',
+                                              style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.w400,
+                                                  color: Colors.black45),
+                                            ),
+                                          ],
+                                        ),
+                                        const SizedBox(
+                                          height: 15,
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                          children: [
+                                            waterChange
+                                                ? const Text(
+                                              'Not Required',
+                                              style: TextStyle(
+                                                  fontSize: 24,
+                                                  fontWeight: FontWeight.w400,
+                                                  color: Colors.green),
+                                            )
+                                                : const Text(
+                                              'Required',
+                                              style: TextStyle(
+                                                  fontSize: 30,
+                                                  fontWeight: FontWeight.w400,
+                                                  color: Colors.red),
+                                            ),
+                                          ],
+                                        ),
+                                        const SizedBox(
+                                          height: 15,
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                          children: const [
+                                            Text(
+                                              'Location Change',
+                                              style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.w400,
+                                                  color: Colors.black45),
+                                            ),
+                                          ],
+                                        ),
+                                        const SizedBox(
+                                          height: 15,
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                          children: [
+                                            locChange
+                                                ? const Text(
+                                              'Not Required',
+                                              style: TextStyle(
+                                                  fontSize: 24,
+                                                  fontWeight: FontWeight.w400,
+                                                  color: Colors.green),
+                                            )
+                                                : const Text(
+                                              'Required',
+                                              style: TextStyle(
+                                                  fontSize: 30,
+                                                  fontWeight: FontWeight.w400,
+                                                  color: Colors.red),
+                                            ),
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          StaggeredGridTile.count(
+                            crossAxisCellCount: 1,
+                            mainAxisCellCount: 0.8,
+                            child: Shimmer(
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(30),
+                                  color: const Color(0xffb1e3d8),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withOpacity(0.5),
+                                      spreadRadius: 2,
+                                      blurRadius: 5,
+                                      offset: const Offset(0, 3),
+                                    ),
+                                  ],
+                                ),
+                                child: Expanded(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const Text(
+                                        'Plants',
+                                        style: TextStyle(
+                                            fontSize: 24,
+                                            fontWeight: FontWeight.w500,
+                                            color: Colors.black54),
+                                      ),
+                                      const SizedBox(height: 5),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: const [
+                                          Padding(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 3),
+                                            child: Icon(
+                                              Icons.grass_outlined,
+                                              color: Color(0xff44b230),
+                                              size: 16,
+                                            ),
+                                          ),
+                                          Text(
+                                            'Lettuce',
+                                            style: TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w300,
+                                                color: Colors.black45),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
@@ -728,13 +733,13 @@ class _BarIndicatorState extends State<BarIndicator> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(20),
+      padding: const EdgeInsets.all(20),
       child: Column(
         children: [
           Container(
             width: MediaQuery.of(context).size.width / 6,
             height: 3,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
                 color: Colors.grey,
                 borderRadius: BorderRadius.all(Radius.circular(15))),
           )
