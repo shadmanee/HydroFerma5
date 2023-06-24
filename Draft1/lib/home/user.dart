@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 import '../util/sidebar.dart';
 import 'editprofile.dart';
+import 'message_screen.dart';
 import 'notifications.dart';
 
 class UserInfo extends StatefulWidget {

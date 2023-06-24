@@ -70,10 +70,7 @@ class _ImageDetailScreenState extends State<ImageDetailScreen> {
                 ),
               ),
               const SizedBox(height: 8),
-              Text(
-                'Confidence: ${(_confidence).toStringAsFixed(2)}%',
-                style: const TextStyle(fontSize: 18),
-              ),
+
               const SizedBox(height: 50),
               ElevatedButton(
                 onPressed: () async {

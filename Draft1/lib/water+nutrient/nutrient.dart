@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:hydroferma5/croprecommendation/search.dart';
+import 'package:hydroferma5/util/charts.dart';
+import 'package:hydroferma5/test/test2.dart';
 import 'package:hydroferma5/water+nutrient/water.dart';
 import 'package:page_transition/page_transition.dart';
 
+import '../home/message_screen.dart';
 import '../home/notifications.dart';
 import '../home/user.dart';
 import '../util/sidebar.dart';
@@ -268,7 +270,7 @@ class _NutrientState extends State<Nutrient> {
                                       const SizedBox(width: 20),
                                       Expanded(
                                         child: Text(
-                                          'Malabar Spinach',
+                                          'Lettuce',
                                           style: TextStyle(
                                               fontSize: 35,
                                               fontWeight: FontWeight.w100,
@@ -312,6 +314,8 @@ class _NutrientState extends State<Nutrient> {
                         ],
                       ),
                     ),
+                    const Divider(),
+                    DonutChartPage(),
                   ],
                 ),
               ),

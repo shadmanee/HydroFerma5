@@ -84,7 +84,7 @@ abstract class Classifier {
         .process(_inputImage);
   }
 
-  Category predict(Image image) {
+  List<Category> predict(Image image) {
     final pres = DateTime.now().millisecondsSinceEpoch;
     _inputImage = TensorImage(_inputType);
     _inputImage.loadImage(image);
@@ -104,7 +104,7 @@ abstract class Classifier {
         .getMapWithFloatValue();
     final pred = getTopProbability(labeledProb);
 
-    return Category(pred.key, pred.value);
+    return [Category(pred.key, pred.value), Category(labeledProb.keys.toList()[1], labeledProb.values.toList()[1]), Category(labeledProb.keys.toList()[2], labeledProb.values.toList()[2])];
   }
 
   void close() {

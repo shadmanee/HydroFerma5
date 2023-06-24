@@ -11,6 +11,8 @@ import 'package:hydroferma5/lifecycle/lifecycle_cam.dart';
 import 'package:hydroferma5/login+register/login/login.dart';
 import 'package:hydroferma5/responsive/tablet.dart';
 import 'package:hydroferma5/test/test.dart';
+import 'package:hydroferma5/test/test2.dart';
+import 'package:hydroferma5/util/charts.dart';
 import 'package:hydroferma5/util/waterchart.dart';
 import 'package:hydroferma5/water+nutrient/water.dart';
 // import 'package:hydroferma5/test/test.dart';
@@ -20,6 +22,8 @@ import 'login+register/register/signup.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:app_settings/app_settings.dart';
 import 'package:http/http.dart' as http;
+
+import 'ml_strmlt/webview.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -69,15 +73,33 @@ class Hydroferma extends StatelessWidget {
   }
 }
 
-class AppScreen extends StatelessWidget {
+class AppScreen extends StatefulWidget {
   const AppScreen({Key? key}) : super(key: key);
 
+  @override
+  State<AppScreen> createState() => _AppScreenState();
+}
+
+class _AppScreenState extends State<AppScreen> {
+  late MyWebView myWebView;
+  @override
+  void initState() {
+    myWebView = MyWebView('http://localhost:8501');
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: MediaQuery.of(context).orientation == Orientation.portrait
-          ? const FiChartPage()
+          ? const MobileLand()
           : const TabletScaffold(),
     );
   }
 }
+
+
+// class AppScreen extends StatelessWidget {
+//   const AppScreen({Key? key}) : super(key: key);
+//
+//
+// }

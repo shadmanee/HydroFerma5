@@ -1,7 +1,7 @@
-import 'dart:async';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
+import 'package:hydroferma5/ml_strmlt/webview.dart';
 
 late double current;
 
@@ -45,16 +45,6 @@ class _SystemOptionsState extends State<SystemOptions> {
                 },
               ),
               OptionTile(
-                title: 'Water Control',
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const WaterControlPage()),
-                  );
-                },
-              ),
-              OptionTile(
                 title: 'Nutrient Control',
                 onPressed: () {
                   Navigator.push(
@@ -92,91 +82,6 @@ class OptionTile extends StatelessWidget {
   }
 }
 
-class WaterControlPage extends StatefulWidget {
-  const WaterControlPage({super.key});
-
-  @override
-  _WaterControlPageState createState() => _WaterControlPageState();
-}
-
-class _WaterControlPageState extends State<WaterControlPage> {
-  bool _isTapped = false;
-  bool _isPumpOn = false;
-
-  void createWaterNutrientNode(bool isPumpOn) {
-    final databaseReference = FirebaseDatabase.instance.ref();
-    DatabaseReference waterNutrientRef = databaseReference.child('water_nutrient');
-    DatabaseReference pumpRef = waterNutrientRef.child('pump');
-    pumpRef.set(isPumpOn ? 'ON' : 'OFF');
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        body: Center(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Row(
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.arrow_back_ios),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                ],
-              ),
-              const SizedBox(height: 50),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Text("WATER PUMP",
-                      style:
-                          TextStyle(fontSize: 30, fontWeight: FontWeight.w700))
-                ],
-              ),
-              const SizedBox(height: 20),
-              GestureDetector(
-                onTap: () {
-                  setState(() {
-                    _isTapped = !_isTapped;
-                  });
-                  if(!_isTapped) {
-                    _isPumpOn = true; // Replace with your logic to determine the boolean value
-                  }
-                  else{
-                    _isPumpOn = false; // Replace with your logic to determine the boolean value
-                  }
-                  createWaterNutrientNode(_isPumpOn);
-                },
-                child: Container(
-                  width: 200,
-                  height: 200,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: _isTapped ? Colors.red : Colors.green,
-                      width: 4,
-                    ),
-                  ),
-                  child: Center(
-                    child: _isTapped
-                        ? const Text("OFF", style: TextStyle(fontSize: 30))
-                        : const Text("ON", style: TextStyle(fontSize: 30)),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
 class NutrientControlPage extends StatefulWidget {
   const NutrientControlPage({super.key});
 
@@ -186,6 +91,28 @@ class NutrientControlPage extends StatefulWidget {
 
 class _NutrientControlPageState extends State<NutrientControlPage> {
   bool _isTapped = false;
+  bool _isValveOn = false;
+
+  void createWaterNutrientNode(bool isValveOn) {
+    final databaseReference = FirebaseDatabase.instance.ref();
+    DatabaseReference valveRef = databaseReference.child('valve/valve');
+    valveRef.set(isValveOn ? 'ON' : 'OFF');
+  }
+
+  late MyWebView myWebView;
+
+  @override
+  void initState() {
+    super.initState();
+    myWebView = MyWebView('http://localhost:8501');
+    DatabaseReference valveRef = FirebaseDatabase.instance.ref().child('valve/valve');
+    valveRef.onValue.listen((event) {
+      final valveStatus = event.snapshot.value as String?;
+      setState(() {
+        _isValveOn = valveStatus == 'ON';
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -221,22 +148,61 @@ class _NutrientControlPageState extends State<NutrientControlPage> {
                   setState(() {
                     _isTapped = !_isTapped;
                   });
+                  if (!_isTapped) {
+                    _isValveOn =
+                        true; // Replace with your logic to determine the boolean value
+                  } else {
+                    _isValveOn =
+                        false; // Replace with your logic to determine the boolean value
+                  }
+                  createWaterNutrientNode(_isValveOn);
                 },
                 child: Container(
-                    width: 200,
-                    height: 200,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: _isTapped ? Colors.red : Colors.green,
-                        width: 4,
+                  width: 200,
+                  height: 200,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: !_isValveOn ? Colors.red : Colors.green,
+                      width: 4,
+                    ),
+                  ),
+                  child: Center(
+                    child: _isValveOn
+                        ? const Text("ON", style: TextStyle(fontSize: 30))
+                        : const Text("OFF", style: TextStyle(fontSize: 30)),
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 25,
+              ),
+              const Divider(
+                thickness: 1,
+              ),
+              Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    const Text(
+                      'Current Valve Status: ',
+                      style: TextStyle(
+                          fontSize: 22,
+                          color: Colors.black54,
+                          fontWeight: FontWeight.w700),
+                    ),
+                    Expanded(child: Container()),
+                    Text(
+                      !_isTapped ? "ON" : "OFF",
+                      style: TextStyle(
+                        color: !_isTapped ? Colors.green : Colors.red,
+                        fontSize: 22,
+                        fontWeight: FontWeight.w500,
                       ),
                     ),
-                    child: Center(
-                      child: _isTapped
-                          ? const Text("OFF", style: TextStyle(fontSize: 30))
-                          : const Text("ON", style: TextStyle(fontSize: 30)),
-                    )),
+                  ],
+                ),
               ),
             ],
           ),
@@ -301,28 +267,28 @@ class _MyTableState extends State<MyTable> {
     });
   }
 
-  Future<double?> getLastReading() async {
-    DatabaseReference dbRef =
-        FirebaseDatabase.instance.ref().child('/sensor_data/');
-
-    DataSnapshot snapshot =
-        (await dbRef.orderByKey().limitToLast(1).once()) as DataSnapshot;
-
-    Map? reading = snapshot.value as Map?;
-
-    if (reading != null) {
-      reading['reading_id'] = snapshot.key;
-    }
-
-    return reading!['reading_id'];
-  }
+  // Future<double?> getLastReading() async {
+  //   DatabaseReference dbRef =
+  //       FirebaseDatabase.instance.ref().child('/sensor_data/');
+  //
+  //   DataSnapshot snapshot =
+  //       (await dbRef.orderByKey().limitToLast(1).once()) as DataSnapshot;
+  //
+  //   Map? reading = snapshot.value as Map?;
+  //
+  //   if (reading != null) {
+  //     reading['reading_id'] = snapshot.key;
+  //   }
+  //
+  //   return reading!['reading_id'];
+  // }
 
   Widget listItem({required Map reading}) {
     return Container(
       alignment: Alignment.center,
       margin: const EdgeInsets.all(10),
       padding: const EdgeInsets.all(10),
-      height: 150,
+      height: 180,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20.0),
         gradient: const LinearGradient(
@@ -343,7 +309,7 @@ class _MyTableState extends State<MyTable> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  "Temperature: ${reading['temperature']}\u{00B0}C",
+                  "Temperature: ${reading['temperature'].toStringAsFixed(2)}\u{00B0}C",
                   style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w500,
@@ -351,7 +317,7 @@ class _MyTableState extends State<MyTable> {
                   ),
                 ),
                 Text(
-                  "Water Temperature: ${double.parse(reading['water'].toStringAsFixed(1))}\u{00B0}C",
+                  "Water Temp.: ${double.parse(reading['water'].toStringAsFixed(2))}\u{00B0}C",
                   style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w500,
@@ -359,7 +325,7 @@ class _MyTableState extends State<MyTable> {
                   ),
                 ),
                 Text(
-                  "Humidity: ${reading['humidity']}%",
+                  "Humidity: ${reading['humidity'].toStringAsFixed(2)}%",
                   style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w500,

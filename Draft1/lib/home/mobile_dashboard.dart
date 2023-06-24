@@ -1,5 +1,6 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:get/get.dart';
@@ -10,17 +11,13 @@ import 'package:page_transition/page_transition.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 
+import '../ml_strmlt/webview.dart';
+import '../util/charts.dart';
 import '../util/sidebar.dart';
 import '../water+nutrient/water.dart';
 import 'noti.dart';
 import 'notifications.dart';
 import 'message_screen.dart';
-
-Map<dynamic, dynamic> lastRead = {};
-double temperature = 25.67;
-double humidity = 63.7;
-double water = 27.44;
-double ph = 6.1;
 
 class Dashboard extends StatefulWidget {
   const Dashboard({Key? key}) : super(key: key);
@@ -32,19 +29,54 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard> {
   var notificationCount = 3; // TODO: Replace with actual notification count
   final pc = PanelController();
-  String selectedModule = 'Water Supply';
-  bool nutrientValve = true;
-  bool waterChange = true;
+  String selectedModule = 'Nutrient Supply';
+  String nutrientValve = "nothing";
+  bool waterChange = false;
   bool locChange = false;
 
-  String panelContent(String module) {
+  Widget panelContent(String module) {
     switch (module) {
-      case 'Water Supply':
-        return 'Information about water and nutrient supply in the system.';
+      case 'Nutrient Supply':
+        return Column(
+          children: <Widget>[
+            Text(
+              'Hydroferma takes nutrient supply to the next level with its advanced hydroponic system. By precisely controlling and delivering the optimal blend of nutrients directly to the plants\' root systems, Hydroferma ensures they receive the perfect balance of essential elements for healthy growth. This innovative approach eliminates the need for soil and enables plants to thrive in a soilless environment. The nutrient supply system in Hydroferma not only maximizes plant nutrition but also minimizes waste, making it an environmentally sustainable solution for efficient and productive plant cultivation.',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w300,
+                color: Colors.grey[600],
+              ),
+            ),
+            const SizedBox(height: 20),
+          ],
+        );
       case 'Water Change':
-        return 'Information about last water change as well as the significance of changing water frequently in a hydroponic system.';
+        return Text(
+          'Hydroferma incorporates an intelligent water change decision-making system that enhances plant health and conserves water resources. Using advanced sensors and data analysis, the system determines the optimal timing for water changes based on factors such as moisture levels, nutrient concentrations, and plant growth stage. When a water change is required, Hydroferma sends a timely notification to the user through the mobile app, ensuring that they are aware of the need for action. This proactive approach not only minimizes water wastage but also maximizes plant productivity by maintaining the ideal hydration levels for each plant. With Hydroferma\'s water change decision and notification feature, users can effortlessly maintain an optimal growing environment for their plants while promoting sustainable water management practices.',
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w300,
+            color: Colors.grey[600],
+          ),
+        );
+      case 'Environment Change':
+        return Text(
+          'Hydroferma incorporates an intelligent environment change decision and notification system, ensuring the ideal growing conditions for your plants. By monitoring various parameters like temperature, humidity, and light intensity, the system analyzes the data and makes informed decisions to create an optimal environment. If any deviations are detected, Hydroferma sends real-time notifications to your mobile device, keeping you updated on any necessary adjustments. This proactive approach allows you to take prompt action, maintaining the perfect growing conditions for your plants and maximizing their potential yield. With Hydroferma, you can rest assured that your plants are always receiving the care they need for healthy and thriving growth.',
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w300,
+            color: Colors.grey[600],
+          ),
+        );
       default:
-        return 'Information about crop recommendation using sensor data.';
+        return Text(
+          'Hydroferma employs an advanced lifecycle stage classification decision system, ensuring precise monitoring and care for your plants at every growth stage. Using machine learning algorithms and sensor data, the system accurately identifies the lifecycle stage of each plant, such as germination, vegetative growth, flowering, or fruiting. This classification enables Hydroferma to provide tailored recommendations and adjustments for each specific stage, optimizing nutrient supply, water usage, and environmental conditions. By adapting to the unique needs of each growth phase, Hydroferma ensures that your plants receive the right support at the right time, leading to enhanced growth, improved yield, and overall plant health. With Hydroferma\'s intelligent lifecycle stage classification, you can achieve remarkable results in your plant cultivation endeavors.',
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w300,
+            color: Colors.grey[600],
+          ),
+        );
     }
   }
 
@@ -69,64 +101,90 @@ class _DashboardState extends State<Dashboard> {
   }
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  late DatabaseReference _sensorDataRef,
+      _valveStatusRef,
+      _changeWater,
+      _changeLoc;
+  int latestReading = 0;
+  double temperature = 25.67;
+  double water = 26.1;
+  double humidity = 66.7;
+  double ph = 5.4;
 
-  @override
-  void initState() {
-    super.initState();
-    setupSensorDataListener();
-    setupValveStatusListener();
-  }
-
-  void setupSensorDataListener() async {
-    DatabaseReference dbRef =
-        FirebaseDatabase.instance.ref().child('/sensor_data/');
-
-    dbRef.onValue.listen((event) {
-      print("DBREEF");
-      DataSnapshot snapshot = event.snapshot;
-      print('Snapshot value: ${snapshot.value}');
-
-      if (snapshot.value != null) {
-        List<dynamic> readings = snapshot.value as List<dynamic>;
-
-        if (readings.isNotEmpty) {
-          Map<dynamic, dynamic> lastReading =
-              readings.last as Map<dynamic, dynamic>;
-          lastRead = lastReading;
-
-          if (lastRead.containsKey('temperature')) {
-            temperature = lastRead['temperature'];
+  void _startListeningToLatestReading() {
+    _sensorDataRef.orderByKey().limitToLast(1).onValue.listen((event) {
+      if (event.snapshot.exists) {
+        final Map<dynamic, dynamic>? sensorData = event.snapshot.value as Map?;
+        if (sensorData != null) {
+          final latestReadingKey = sensorData.keys.first;
+          final latestReadingData = sensorData[latestReadingKey];
+          if (latestReadingData != null && latestReadingData is Map) {
+            setState(() {
+              latestReading = int.parse(latestReadingKey);
+              temperature = latestReadingData['temperature'] as double;
+              humidity = latestReadingData['humidity'] as double;
+              water = latestReadingData['water'] as double;
+              ph = latestReadingData['ph'] as double;
+            });
           }
-
-          if (lastRead.containsKey('humidity')) {
-            humidity = lastRead['humidity'];
-          }
-
-          if (lastRead.containsKey('water')) {
-            water = lastRead['water'];
-            water = double.parse(water.toStringAsFixed(1));
-          }
-
-          if (lastRead.containsKey('ph')) {
-            ph = lastRead['ph'];
-            ph = double.parse(ph.toStringAsFixed(1));
-          }
-
-          setState(() {});
         }
       }
     });
   }
 
-  void setupValveStatusListener() async {
-    final DatabaseReference databaseRef = FirebaseDatabase.instance.ref();
-    print("DBREF1");
-    DataSnapshot dataSnapshot = (await databaseRef
-        .child('water_nutrient')
-        .child('valve')
-        .once()) as DataSnapshot;
-    String valveValue = dataSnapshot.value as String;
-    print('Valve value: $valveValue');
+  void _startListeniingToValveStatus() {
+    _valveStatusRef.orderByKey().limitToLast(1).onValue.listen((event) {
+      _valveStatusRef = FirebaseDatabase.instance.ref().child('valve/valve/');
+      _valveStatusRef.onValue.listen((event) {
+        final valveStatus = event.snapshot.value as String?;
+        setState(() {
+          nutrientValve = valveStatus ?? '';
+        });
+      });
+    });
+  }
+
+  void _startListeniingToChangeWater() {
+    _changeWater.orderByKey().limitToLast(1).onValue.listen((event) {
+      _changeWater =
+          FirebaseDatabase.instance.ref().child('change_water/change_water/');
+      _changeWater.onValue.listen((event) {
+        final changeWater = event.snapshot.value as String?;
+        setState(() {
+          waterChange = changeWater == 'REQ' ? true : false;
+        });
+      });
+    });
+  }
+
+  void _startListeniingToChangeLoc() {
+    _changeLoc.orderByKey().limitToLast(1).onValue.listen((event) {
+      _changeLoc =
+          FirebaseDatabase.instance.ref().child('change_loc/change_loc/');
+      _changeLoc.onValue.listen((event) {
+        final changeLoc = event.snapshot.value as String?;
+        setState(() {
+          locChange = changeLoc == 'REQ' ? true : false;
+        });
+      });
+    });
+  }
+
+  late MyWebView myWebView;
+
+  @override
+  void initState() {
+    super.initState();
+    myWebView = MyWebView("http://localhost:8501");
+    _sensorDataRef = FirebaseDatabase.instance.ref().child('sensor_data');
+    _startListeningToLatestReading();
+    _valveStatusRef = FirebaseDatabase.instance.ref().child('valve/valve');
+    _startListeniingToValveStatus();
+    _changeWater =
+        FirebaseDatabase.instance.ref().child('change_water/change_water');
+    _startListeniingToChangeWater();
+    _changeLoc = FirebaseDatabase.instance.ref().child('change_loc/change_loc');
+    _startListeniingToChangeLoc();
   }
 
   @override
@@ -152,8 +210,8 @@ class _DashboardState extends State<Dashboard> {
                 topRight: Radius.circular(20),
               ),
             ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
+            child: ListView(
+              // mainAxisSize: MainAxisSize.min,
               children: [
                 const BarIndicator(),
                 Container(
@@ -186,9 +244,10 @@ class _DashboardState extends State<Dashboard> {
                                 });
                               },
                               items: <String>[
-                                'Water Supply',
+                                'Nutrient Supply',
                                 'Water Change',
-                                'Crop Recommendation',
+                                'Environment Change',
+                                'Lifecycle Stage',
                               ].map<DropdownMenuItem<String>>((String value) {
                                 return DropdownMenuItem<String>(
                                   value: value,
@@ -226,14 +285,7 @@ class _DashboardState extends State<Dashboard> {
                       Row(
                         children: [
                           Expanded(
-                            child: Text(
-                              panelContent(selectedModule),
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w300,
-                                color: Colors.grey[600],
-                              ),
-                            ),
+                            child: panelContent(selectedModule),
                           ),
                         ],
                       ),
@@ -242,15 +294,6 @@ class _DashboardState extends State<Dashboard> {
                           top: MediaQuery.of(context).size.height / 40,
                         ),
                       ),
-                      TextButton(
-                          onPressed: () {},
-                          child: const Text(
-                            'Read More',
-                            style: TextStyle(
-                                fontSize: 12,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.black),
-                          ))
                     ],
                   ),
                 )
@@ -337,7 +380,6 @@ class _DashboardState extends State<Dashboard> {
               Expanded(
                 child: ListView(
                   children: [
-                    const SizedBox(height: 0),
                     Container(
                       margin: const EdgeInsets.symmetric(
                           horizontal: 20, vertical: 20),
@@ -381,12 +423,12 @@ class _DashboardState extends State<Dashboard> {
                                             width: 10,
                                           ),
                                           Text(
-                                            '$temperature\u00B0C',
+                                            '${temperature.toStringAsFixed(2)}\u00B0C',
                                             style: TextStyle(
                                               fontSize: 20,
                                               fontWeight: FontWeight.w300,
-                                              color: (temperature >= 20) &
-                                                      (temperature <= 25)
+                                              color: (temperature! >= 20) &
+                                                      (temperature! <= 25)
                                                   ? Colors.black54
                                                   : Colors.red,
                                             ),
@@ -409,12 +451,12 @@ class _DashboardState extends State<Dashboard> {
                                             width: 10,
                                           ),
                                           Text(
-                                            '$humidity%',
+                                            '${humidity.toStringAsFixed(2)}%',
                                             style: TextStyle(
                                                 fontSize: 20,
                                                 fontWeight: FontWeight.w300,
-                                                color: (40 <= humidity) &
-                                                        (65 >= humidity)
+                                                color: (40 <= humidity!) &
+                                                        (65 >= humidity!)
                                                     ? Colors.black54
                                                     : Colors.red),
                                           ),
@@ -436,11 +478,12 @@ class _DashboardState extends State<Dashboard> {
                                             width: 10,
                                           ),
                                           Text(
-                                            '$water\u00B0C',
+                                            '${water.toStringAsFixed(2)}\u00B0C',
                                             style: TextStyle(
                                               fontSize: 20,
                                               fontWeight: FontWeight.w300,
-                                              color: (water >= 16) & (water <= 20)
+                                              color: (water! >= 16) &
+                                                      (water! <= 20)
                                                   ? Colors.black54
                                                   : Colors.red,
                                             ),
@@ -452,7 +495,7 @@ class _DashboardState extends State<Dashboard> {
                                       ),
                                       Row(
                                         mainAxisAlignment:
-                                        MainAxisAlignment.start,
+                                            MainAxisAlignment.start,
                                         children: [
                                           const Icon(
                                             Icons.multiline_chart,
@@ -463,13 +506,11 @@ class _DashboardState extends State<Dashboard> {
                                             width: 10,
                                           ),
                                           Text(
-                                            '$ph',
-                                            style: TextStyle(
+                                            ph.toStringAsFixed(2),
+                                            style: const TextStyle(
                                               fontSize: 20,
                                               fontWeight: FontWeight.w300,
-                                              color: (water >= 16) & (water <= 20)
-                                                  ? Colors.black54
-                                                  : Colors.red,
+                                              color: Colors.black54,
                                             ),
                                           ),
                                         ],
@@ -521,19 +562,21 @@ class _DashboardState extends State<Dashboard> {
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
                                         children: [
-                                          nutrientValve
-                                              ? const Text(
-                                                  'ON',
-                                                  style: TextStyle(
+                                          nutrientValve == "ON"
+                                              ? Text(
+                                                  nutrientValve,
+                                                  style: const TextStyle(
                                                       fontSize: 24,
-                                                      fontWeight: FontWeight.w400,
+                                                      fontWeight:
+                                                          FontWeight.w400,
                                                       color: Colors.green),
                                                 )
-                                              : const Text(
-                                                  'OFF',
-                                                  style: TextStyle(
-                                                      fontSize: 30,
-                                                      fontWeight: FontWeight.w400,
+                                              : Text(
+                                                  nutrientValve,
+                                                  style: const TextStyle(
+                                                      fontSize: 24,
+                                                      fontWeight:
+                                                          FontWeight.w400,
                                                       color: Colors.red),
                                                 ),
                                         ],
@@ -565,18 +608,24 @@ class _DashboardState extends State<Dashboard> {
                                   child: Padding(
                                     padding: const EdgeInsets.all(12.0),
                                     child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         Row(
                                           mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                          children: const [
-                                            Text(
-                                              'Water Change',
-                                              style: TextStyle(
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.w400,
-                                                  color: Colors.black45),
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Wrap(
+                                              children: const [
+                                                Text(
+                                                  'Water Change',
+                                                  style: TextStyle(
+                                                      fontSize: 15,
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                      color: Colors.black45),
+                                                ),
+                                              ],
                                             ),
                                           ],
                                         ),
@@ -585,23 +634,25 @@ class _DashboardState extends State<Dashboard> {
                                         ),
                                         Row(
                                           mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                                              MainAxisAlignment.center,
                                           children: [
                                             waterChange
                                                 ? const Text(
-                                              'Not Required',
-                                              style: TextStyle(
-                                                  fontSize: 24,
-                                                  fontWeight: FontWeight.w400,
-                                                  color: Colors.green),
-                                            )
+                                                    'Required',
+                                                    style: TextStyle(
+                                                        fontSize: 22,
+                                                        fontWeight:
+                                                            FontWeight.w400,
+                                                        color: Colors.red),
+                                                  )
                                                 : const Text(
-                                              'Required',
-                                              style: TextStyle(
-                                                  fontSize: 30,
-                                                  fontWeight: FontWeight.w400,
-                                                  color: Colors.red),
-                                            ),
+                                                    'Not Required',
+                                                    style: TextStyle(
+                                                        fontSize: 20,
+                                                        fontWeight:
+                                                            FontWeight.w400,
+                                                        color: Colors.green),
+                                                  ),
                                           ],
                                         ),
                                         const SizedBox(
@@ -609,12 +660,12 @@ class _DashboardState extends State<Dashboard> {
                                         ),
                                         Row(
                                           mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                                              MainAxisAlignment.center,
                                           children: const [
                                             Text(
                                               'Location Change',
                                               style: TextStyle(
-                                                  fontSize: 18,
+                                                  fontSize: 15,
                                                   fontWeight: FontWeight.w400,
                                                   color: Colors.black45),
                                             ),
@@ -625,23 +676,25 @@ class _DashboardState extends State<Dashboard> {
                                         ),
                                         Row(
                                           mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                                              MainAxisAlignment.center,
                                           children: [
                                             locChange
                                                 ? const Text(
-                                              'Not Required',
-                                              style: TextStyle(
-                                                  fontSize: 24,
-                                                  fontWeight: FontWeight.w400,
-                                                  color: Colors.green),
-                                            )
+                                                    'Required',
+                                                    style: TextStyle(
+                                                        fontSize: 22,
+                                                        fontWeight:
+                                                            FontWeight.w400,
+                                                        color: Colors.red),
+                                                  )
                                                 : const Text(
-                                              'Required',
-                                              style: TextStyle(
-                                                  fontSize: 30,
-                                                  fontWeight: FontWeight.w400,
-                                                  color: Colors.red),
-                                            ),
+                                                    'Not Required',
+                                                    style: TextStyle(
+                                                        fontSize: 20,
+                                                        fontWeight:
+                                                            FontWeight.w400,
+                                                        color: Colors.green),
+                                                  ),
                                           ],
                                         )
                                       ],
@@ -711,6 +764,117 @@ class _DashboardState extends State<Dashboard> {
                         ],
                       ),
                     ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => super.widget),
+                            );
+                          },
+                          icon: const Icon(Icons.refresh),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 50),
+                    AirTemperatureChart(),
+                    WaterTemperatureChart(),
+                    HumidityChart(),
+                    PhChart(),
+                    const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Text(
+                        'Legends',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Row(
+                        children: [
+                          Container(
+                            height: 10,
+                            width: 10,
+                            color: Colors.red,
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          const Text(
+                            'Air Temperature',
+                            style: TextStyle(color: Colors.red),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Row(
+                        children: [
+                          Container(
+                            height: 10,
+                            width: 10,
+                            color: Colors.deepPurple,
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          const Text(
+                            'Water Temperature',
+                            style: TextStyle(color: Colors.deepPurple),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Row(
+                        children: [
+                          Container(
+                            height: 10,
+                            width: 10,
+                            color: Colors.green,
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          const Text(
+                            'Humidity',
+                            style: TextStyle(color: Colors.green),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Row(
+                        children: [
+                          Container(
+                            height: 10,
+                            width: 10,
+                            color: CupertinoColors.systemOrange,
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          const Text(
+                            'pH',
+                            style:
+                                TextStyle(color: CupertinoColors.systemOrange),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 200),
                   ],
                 ),
               ),

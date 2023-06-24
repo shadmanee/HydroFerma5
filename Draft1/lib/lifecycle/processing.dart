@@ -14,6 +14,8 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'dart:math';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 
+import '../util/charts.dart';
+
 class Loading extends StatefulWidget {
   final XFile photo;
 
@@ -101,7 +103,7 @@ class _ClassificationState extends State<Classification> {
   late Classifier _classifier;
 
   Image? _imageWidget;
-  Category? _category;
+  Category? _category, _second, _third;
 
   @override
   void initState() {
@@ -122,7 +124,9 @@ class _ClassificationState extends State<Classification> {
   void _predict(img.Image image) async {
     var pred = _classifier.predict(image);
     setState(() {
-      _category = pred;
+      _category = pred[0];
+      _second = pred[1];
+      _third = pred[2];
     });
   }
 
@@ -130,7 +134,9 @@ class _ClassificationState extends State<Classification> {
     try {
       final storageRef = FirebaseStorage.instance
           .ref()
-          .child('images/${DateTime.now().millisecondsSinceEpoch}.jpg');
+          .child('images/${DateTime
+          .now()
+          .millisecondsSinceEpoch}.jpg');
 
       // Compress the image
       final compressedImage = await FlutterImageCompress.compressWithList(
@@ -155,7 +161,6 @@ class _ClassificationState extends State<Classification> {
       print('Error uploading image: $e');
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -200,12 +205,72 @@ class _ClassificationState extends State<Classification> {
               style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
             ),
             const SizedBox(height: 8),
-            Text(
-              _category != null
-                  ? 'Confidence: ${(_category!.score.toDouble() * 100)
-                  .round()}%'
-                  : '',
-              style: const TextStyle(fontSize: 16),
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 25.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Row(
+                      children: [
+                        Text('${(_category!.score.toDouble()*100).round()}%'),
+                        const SizedBox(width: 10),
+                        SizedBox(
+                          width: 200,
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 8.0),
+                            child: LinearProgressIndicator(color: CupertinoColors.systemGreen,
+                              backgroundColor: Colors.black45,
+                              minHeight: 10,
+                              value: _category!.score.toDouble(),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        Text(_category!.label.substring(2)),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        Text('${(100 - _category!.score.toDouble()*100).round()}%'),
+                        const SizedBox(width: 10),
+                        SizedBox(
+                          width: 200,
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 8.0),
+                            child: LinearProgressIndicator(color: CupertinoColors.systemGreen,
+                              backgroundColor: Colors.black45,
+                              minHeight: 10,
+                              value: _second!.score.toDouble(),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        const Text('Others'),
+                      ],
+                    ),
+                    // Row(
+                    //   children: [
+                    //     Text('${(_third!.score.toDouble()*100).round()}%'),
+                    //     const SizedBox(width: 10),
+                    //     SizedBox(
+                    //       width: 200,
+                    //       child: Padding(
+                    //         padding: const EdgeInsets.only(right: 8.0),
+                    //         child: LinearProgressIndicator(color: CupertinoColors.systemGreen,
+                    //           backgroundColor: Colors.black45,
+                    //           minHeight: 10,
+                    //           value: _third!.score.toDouble(),
+                    //         ),
+                    //       ),
+                    //     ),
+                    //     const SizedBox(width: 10),
+                    //     Text(_third!.label.substring(2)),
+                    //   ],
+                    // ),
+                  ],
+                ),
+              ),
             ),
             const SizedBox(height: 10),
             ElevatedButton(

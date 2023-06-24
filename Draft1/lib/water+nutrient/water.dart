@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:hydroferma5/home/message_screen.dart';
+import 'package:hydroferma5/test/test2.dart';
 import 'package:hydroferma5/util/sidebar.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:tiny_charts/tiny_charts.dart';
@@ -7,7 +9,7 @@ import 'package:tiny_charts/tiny_charts.dart';
 import '../home/connected_system.dart';
 import '../home/notifications.dart';
 import '../home/user.dart';
-import '../util/waterchart.dart';
+import '../util/charts.dart';
 import 'nutrient.dart';
 
 class Water extends StatefulWidget {
@@ -172,7 +174,7 @@ class _WaterState extends State<Water> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Text(
-                                    '4.7',
+                                    '2.5',
                                     style: TextStyle(
                                         fontSize: 50,
                                         fontWeight: FontWeight.w100,
@@ -223,15 +225,16 @@ class _WaterState extends State<Water> {
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Text(
-                                    '3h',
+                                  const Text(
+                                    'Flow Rate:',
                                     style: TextStyle(
-                                        fontSize: 50,
+                                        fontSize: 15,
                                         fontWeight: FontWeight.w100,
-                                        color: Colors.grey[600]),
+                                        color: Colors.black45),
                                   ),
+                                  const SizedBox(height: 5),
                                   Text(
-                                    '9m',
+                                    '4.7',
                                     style: TextStyle(
                                         fontSize: 50,
                                         fontWeight: FontWeight.w100,
@@ -239,19 +242,11 @@ class _WaterState extends State<Water> {
                                   ),
                                   const SizedBox(height: 5),
                                   const Text(
-                                    'Since Last',
+                                    'Lpm',
                                     style: TextStyle(
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.w300,
-                                        color: Colors.black45),
-                                  ),
-                                  const SizedBox(height: 5),
-                                  const Text(
-                                    'Water Change',
-                                    style: TextStyle(
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.w300,
-                                        color: Colors.black45),
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.w800,
+                                        color: Colors.black38),
                                   ),
                                 ],
                               ),
@@ -260,45 +255,11 @@ class _WaterState extends State<Water> {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 40),
-                    Row(
-                      children: [
-                        const SizedBox(width: 10),
-                        const Expanded(
-                          child: Text(
-                            "Usage of Water from Jan '21 - Nov '22",
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w900,
-                            ),
-                          ),
-                        ),
-                        // Container(
-                        //   margin: const EdgeInsets.only(right: 10),
-                        //   decoration: BoxDecoration(
-                        //     border: Border.all(color: Colors.black),
-                        //     borderRadius: BorderRadius.circular(10.0)
-                        //   ),
-                        //   child: IconButton(
-                        //     onPressed: () {
-                        //       // Navigator.push(
-                        //       //   context,
-                        //       //   PageTransition(
-                        //       //     curve: Curves.linear,
-                        //       //     type: PageTransitionType.bottomToTop,
-                        //       //     child: const ChartPage(),
-                        //       //   ),
-                        //       // );
-                        //     },
-                        //     icon: const Icon(Icons.show_chart),
-                        //   ),
-                        // )
-                      ],
-                    ),
-                    // SizedBox(
-                    //   height: 300,
-                    //   child: LineChart(),
+                    // const SizedBox(
+                    //   height: 10,
                     // ),
+                    const Divider(),
+                    ChartPage(),
                     const Divider(),
                     Row(
                       children: [
@@ -363,48 +324,3 @@ class _WaterState extends State<Water> {
   }
 }
 
-// class ChartPage extends StatefulWidget {
-//   const ChartPage({Key? key}) : super(key: key);
-//
-//   @override
-//   State<ChartPage> createState() => _ChartPageState();
-// }
-
-// class _ChartPageState extends State<ChartPage> {
-//   @override
-//   Widget build(BuildContext context) {
-//     return SafeArea(
-//       child: Scaffold(
-//           body: Column(
-//         children: [
-//           Row(
-//             children: [
-//               IconButton(
-//                 onPressed: () {
-//                   Navigator.pop(context);
-//                 },
-//                 icon: const Icon(Icons.close, size: 30),
-//               )
-//             ],
-//           ),
-//           Column(
-//             children: [
-//               const Text(
-//                 'Water Usage',
-//                 style: TextStyle(fontSize: 30),
-//               ),
-//               const Text(
-//                 "Jan '21 - Nov '22",
-//                 style: TextStyle(fontSize: 25, fontWeight: FontWeight.w300),
-//               ),
-//               SizedBox(
-//                 height: 400,
-//                 child: LineChart(),
-//               ),
-//             ],
-//           )
-//         ],
-//       )),
-//     );
-//   }
-// }
